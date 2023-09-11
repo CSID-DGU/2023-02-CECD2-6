@@ -1,0 +1,16 @@
+{
+    "chosun": {
+        "importFileName":"chosun",
+        "companyName": "조선일보",
+        "topic": {
+            "정치": "https://www.chosun.com/arc/outboundfeeds/rss/category/politics/?outputType=xml",
+            "경제": "https://www.chosun.com/arc/outboundfeeds/rss/category/economy/?outputType=xml",
+            "사회": "https://www.chosun.com/arc/outboundfeeds/rss/category/national/?outputType=xml",
+            "국제": "https://www.chosun.com/arc/outboundfeeds/rss/category/international/?outputType=xml",
+            "문화": "https://www.chosun.com/arc/outboundfeeds/rss/category/culture-life/?outputType=xml",
+            "오피니언": "https://www.chosun.com/arc/outboundfeeds/rss/category/opinion/?outputType=xml",
+            "스포츠": "https://www.chosun.com/arc/outboundfeeds/rss/category/sports/?outputType=xml",
+            "연예": "https://www.chosun.com/arc/outboundfeeds/rss/category/entertainments/?outputType=xml"
+        }
+    }
+}

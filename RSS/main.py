@@ -1,0 +1,78 @@
+import newsGenerator
+import json
+import utils
+
+# 테스트용 import
+import time
+
+'''
+    필요시 데이터 후처리 가능
+    {
+        "언론사 영어이름": {
+            "companyName":"언론사 한글이름",
+            "articles": {
+                "topic1": [
+                    {
+                        "title":title,
+                        "link":link,
+                        "context":[sentence1, sentence2, ...]
+                    }
+                ],
+                "topic2": [
+                    {
+                        "title":title,
+                        "link":link,
+                        "context":[sentence1, sentence2, ...]
+                    }
+                ],
+            }
+        }
+    }
+'''
+
+data_dict={}
+
+def PostProcessing():
+    global data_dict
+
+    for companyNameENG in data_dict.keys():
+        companyName=data_dict[companyNameENG]['companyName']
+        articleDict=data_dict[companyNameENG]['articles']
+
+        for topic in articleDict.keys():
+            articleList=articleDict[topic]
+
+            for idx in range(len(articleList)):
+                article=articleList[idx]
+                title=article['title']
+                link=article['link']
+                context=article['context']
+
+                for contextIdx in range(len(context)):
+                    sentence=context[contextIdx]
+                    # 1. 양옆 공백제거
+                    sentence=sentence.strip()
+
+                    # 2. 문장 html 태그 제거
+                    sentence=utils.removeHtmlTags(sentence)
+
+                    # 3. 문장 html 엔티티 변환
+                    sentence=utils.convertHtmlEntities(sentence)
+                    
+                    context[contextIdx] = sentence
+
+
+def main():
+    global data_dict
+
+    startTime=time.time()
+    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany()
+    endTime=time.time()
+    print(endTime-startTime)
+
+    PostProcessing()
+
+    with open('output.json', 'w',encoding='utf-8') as f:
+        json.dump(data_dict, f,ensure_ascii=False)
+
+main()
