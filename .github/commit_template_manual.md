@@ -1,31 +1,31 @@
-# Ä¿¹Ô ¸Þ½ÃÁö ÅÛÇÃ¸´ Àû¿ëÇÏ±â
+# ì»¤ë°‹ ë©”ì‹œì§€ í…œí”Œë¦¿ ì ìš©í•˜ê¸°
 
 
-¸ÕÀú `git clone` À¸·Î .gitmessage.txt¸¦ ·ÎÄÃ·Î ºÒ·¯¿À¼¼¿ä.
+ë¨¼ì € `git clone` ìœ¼ë¡œ .gitmessage.txtë¥¼ ë¡œì»¬ë¡œ ë¶ˆëŸ¬ì˜¤ì„¸ìš”.
 
-±× ÈÄ,<br>
+ê·¸ í›„,<br>
 `git config --local commit.template .github/.gitmessage.txt`<br>
-¸í·É¾î¸¦ ÅëÇÏ¿© git commit templateÀ» ¼³Á¤ÇÏ¼¼¿ä.
+ëª…ë ¹ì–´ë¥¼ í†µí•˜ì—¬ git commit templateì„ ì„¤ì •í•˜ì„¸ìš”.
 
-ÀÌÈÄ¿¡ commitÀ» ÇÒ ¶§,<br>
+ì´í›„ì— commitì„ í•  ë•Œ,<br>
 `git commit`<br>
-¸¦ ÀÔ·ÂÇÏ¸é Ä¿¹Ô ÅÛÇÃ¸´ÀÌ ¶ã°Ì´Ï´Ù!
+ë¥¼ ìž…ë ¥í•˜ë©´ ì»¤ë°‹ í…œí”Œë¦¿ì´ ëœ°ê²ë‹ˆë‹¤!
 
-ÀÌÁ¦ ¸í½ÃÇÑ À§Ä¡¿¡ Ä¿¹Ô ¸Þ½ÃÁö¸¦ ÀÛ¼ºÇÏ¼¼¿ä.
+ì´ì œ ëª…ì‹œí•œ ìœ„ì¹˜ì— ì»¤ë°‹ ë©”ì‹œì§€ë¥¼ ìž‘ì„±í•˜ì„¸ìš”.
 
-Ä¿¹Ô ¸Þ½ÃÁö¸¦ ÀÛ¼ºÇß´Ù¸é,<br>
+ì»¤ë°‹ ë©”ì‹œì§€ë¥¼ ìž‘ì„±í–ˆë‹¤ë©´,<br>
 
-**? Nano ÆíÁý±â »ç¿ë ½Ã**
+**? Nano íŽ¸ì§‘ê¸° ì‚¬ìš© ì‹œ**
 
 `Ctrl + x`<br>
-À» ´©¸£½Ã¸é ÀúÀå¸Þ½ÃÁö°¡ ¶ß´Âµ¥, `y`¸¦ ´©¸£¸é ÀÚµ¿À¸·Î ÀúÀåÀÌ µË´Ï´Ù.
+ì„ ëˆ„ë¥´ì‹œë©´ ì €ìž¥ë©”ì‹œì§€ê°€ ëœ¨ëŠ”ë°, `y`ë¥¼ ëˆ„ë¥´ë©´ ìžë™ìœ¼ë¡œ ì €ìž¥ì´ ë©ë‹ˆë‹¤.
 
-ÀÌÈÄ Enter¸¦ ´©¸£½Ã¸é commit ¸Þ½ÃÁö Àû¿ë ¿Ï·áÀÔ´Ï´Ù!
+ì´í›„ Enterë¥¼ ëˆ„ë¥´ì‹œë©´ commit ë©”ì‹œì§€ ì ìš© ì™„ë£Œìž…ë‹ˆë‹¤!
 
-**? Vi ¶Ç´Â Vim ÆíÁý±â »ç¿ë ½Ã**
+**? Vi ë˜ëŠ” Vim íŽ¸ì§‘ê¸° ì‚¬ìš© ì‹œ**
 
-`:wq` ·Î ÀúÀåÇÏ½Ã¸é µË´Ï´Ù. 
+`:wq` ë¡œ ì €ìž¥í•˜ì‹œë©´ ë©ë‹ˆë‹¤. 
 
 <br>
 
-¸¶Áö¸·À¸·Î `git push` »ç¿ëÇÏ½Ã¸é µË´Ï´Ù.
+ë§ˆì§€ë§‰ìœ¼ë¡œ `git push` ì‚¬ìš©í•˜ì‹œë©´ ë©ë‹ˆë‹¤.
