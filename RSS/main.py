@@ -32,12 +32,11 @@ import time
 
 data_dict={}
 
-def PostProcessing():
-    global data_dict
-
-    for companyNameENG in data_dict.keys():
-        companyName=data_dict[companyNameENG]['companyName']
-        articleDict=data_dict[companyNameENG]['articles']
+# 최종 결과 후처리 함수, input 형태는 위의 주석 참고
+def PostProcessing(inputDict):
+    for companyNameENG in inputDict.keys():
+        companyName=inputDict[companyNameENG]['companyName']
+        articleDict=inputDict[companyNameENG]['articles']
 
         for topic in articleDict.keys():
             articleList=articleDict[topic]
@@ -61,16 +60,20 @@ def PostProcessing():
                     
                     context[contextIdx] = sentence
 
+# 생략 조건 판정 함수
+'''
+    입력: {"title"=title,"link"=link} Dictonary
+'''
+def skipCondition(news):
+    return False
 
 def main():
     global data_dict
 
     startTime=time.time()
-    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany()
+    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(True,skipCondition,PostProcessing)
     endTime=time.time()
     print(endTime-startTime)
-
-    PostProcessing()
 
     with open('output.json', 'w',encoding='utf-8') as f:
         json.dump(data_dict, f,ensure_ascii=False)

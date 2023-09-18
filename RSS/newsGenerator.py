@@ -19,15 +19,15 @@ def _LoadConfigFile():
     입력: rssConfig의 Key값으로 존재하는 언론사이름
     출력: {"주제이름1":[{"title":title,"link"=link,"context":[sentence1,...]}...], ... } 구조의 List
 '''
-def _GetNewsArticle_Company(company):
+def _GetNewsArticle_Company(company,printOption,skipCondition):
     importFileName = _jsonData[company]['importFileName']
     topicDict = _jsonData[company]['topic']
     parserModule = import_module(importFileName)
-    return parserModule.GetNewsArticles(topicDict)
+    return parserModule.GetNewsArticles(topicDict,printOption,skipCondition)
 
 '''
     GetNewsArticle_AllMediaCompany: rssConfig.json에 등록된 언론사들의 뉴스데이터를 가져온다.
-    입력: 중복기사 스크랩 여부, 진행상황 출력 여부
+    입력: 진행상황 출력 여부, 뉴스기사 생략 조건, 후처리 함수
     출력:
     {
         "언론사 영어이름": {
@@ -51,15 +51,22 @@ def _GetNewsArticle_Company(company):
         }
     }
 '''
-def GetNewsArticle_AllMediaCompany(skipOption=False,printOption=True):
+def GetNewsArticle_AllMediaCompany(printOption=True,skipCondition=None,postProcessFunc=None):
     _LoadConfigFile()
 
     retDict={}
     for companyNameENG in _jsonData.keys():
-        print('Start: _GetNewsArticle_Company['+companyNameENG+']')
+        if(printOption):
+            print('Start: _GetNewsArticle_Company['+companyNameENG+']')
+            
         retDict[companyNameENG]={}
         retDict[companyNameENG]['companyName']=_jsonData[companyNameENG]['companyName']
-        retDict[companyNameENG]['articles']=_GetNewsArticle_Company(companyNameENG)
-        print('End: _GetNewsArticle_Company['+companyNameENG+']')
+        retDict[companyNameENG]['articles']=_GetNewsArticle_Company(companyNameENG,printOption,skipCondition)
+
+        if(printOption):
+            print('End: _GetNewsArticle_Company['+companyNameENG+']')
+    
+    if(postProcessFunc is not None):
+        postProcessFunc(retDict)
     
     return retDict
