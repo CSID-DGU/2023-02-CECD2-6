@@ -1,6 +1,6 @@
-import newsGenerator
+import RSS.newsGenerator as newsGenerator
 import json
-import utils
+import RSS.utils as utils
 
 # 테스트용 import
 import time
@@ -29,8 +29,6 @@ import time
         }
     }
 '''
-
-data_dict={}
 
 # 최종 결과 후처리 함수, input 형태는 위의 주석 참고
 def PostProcessing(inputDict):
@@ -67,15 +65,7 @@ def PostProcessing(inputDict):
 def skipCondition(news):
     return False
 
-def main():
-    global data_dict
-
-    startTime=time.time()
+def RSS():
+    data_dict={}
     data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(True,skipCondition,PostProcessing)
-    endTime=time.time()
-    print(endTime-startTime)
-
-    with open('output.json', 'w',encoding='utf-8') as f:
-        json.dump(data_dict, f,ensure_ascii=False)
-
-main()
+    return data_dict

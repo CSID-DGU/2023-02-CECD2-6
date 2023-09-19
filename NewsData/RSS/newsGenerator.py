@@ -2,7 +2,7 @@ import sys
 import json
 from importlib import import_module
 
-sys.path.append('./RssParser')
+sys.path.append('./RSS/RssParser')
 
 _jsonData ={}
 
@@ -10,7 +10,7 @@ _jsonData ={}
     _LoadConfigFile: rssConfig.json의 내용을 파싱
 '''
 def _LoadConfigFile():
-    with open('rssConfig.json', 'r', encoding='utf-8') as f:
+    with open('./RSS/rssConfig.json', 'r', encoding='utf-8') as f:
         global _jsonData
         _jsonData = json.load(f)
 
