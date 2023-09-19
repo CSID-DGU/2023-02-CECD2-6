@@ -63,7 +63,6 @@ def kkma_tokenize(sent):
 
 def TextRank(text: list, topk: int=5):
     sents = [sent.strip() for sent in text if len(sent) != 0]
-    # print(sents)
     
     keyword_extractor = KeywordSummarizer(
         tokenize=komoran_tokenize,
@@ -71,14 +70,10 @@ def TextRank(text: list, topk: int=5):
         verbose = False
     )
 
-    # start = time.time()
     keywords = keyword_extractor.summarize(sents, topk)
-    # end = time.time()
 
     words = []
     for word, rank in keywords:
-        # print('{} ({:.3})'.format(word, rank))
         words.append(word.split("/")[0])
-    # print(end-start)
 
     return words

@@ -67,8 +67,5 @@ def skipCondition(news):
 
 def RSS():
     data_dict={}
-    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(False,skipCondition,PostProcessing)
-
-    # with open('output.json', 'w',encoding='utf-8') as f:
-    #     json.dump(data_dict, f,ensure_ascii=False)
+    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(True,skipCondition,PostProcessing)
     return data_dict
