@@ -1,2 +1,3 @@
 __pycache__/
 NewsData/**/output.json
+NewsData/**/lastPost.json

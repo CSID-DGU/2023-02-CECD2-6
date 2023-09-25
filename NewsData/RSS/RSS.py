@@ -58,11 +58,17 @@ def PostProcessing(inputDict):
                     
                     context[contextIdx] = sentence
 
-# 생략 조건 판정 함수
+# 뉴스기사 생략 조건 판정 함수
 '''
-    입력: {"title"=title,"link"=link} Dictonary
+    입력: {"title"=title,"link"=link,"date"=date} Dictonary, 언론사 이름, 주제 이름
 '''
-def skipCondition(news):
+def skipCondition(news,cName,cTopic):
+    lastPostDict = utils.LoadConfigFile('./RSS/lastPost.json')
+    try:
+        if(utils.CompareTimeStamp(lastPostDict[cName][cTopic],news['date'])>=0):
+            return True
+    except Exception:
+        return False
     return False
 
 def RSS():

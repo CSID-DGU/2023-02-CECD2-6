@@ -1,18 +1,29 @@
 import sys
 import json
 from importlib import import_module
+import datetime
+import RSS.utils as utils
 
 sys.path.append('./RSS/RssParser')
 
 _jsonData ={}
+ 
+def _WriteLastPostJson(d):
+    ret={}
+    for company in d.keys():
+        ret[company]={}
+        for topic in d[company]['articles'].keys():
+            articles=d[company]['articles'][topic]
+            dates=[article['date'] for article in articles]
+            sortedDates=sorted(dates,reverse=True)
+            
+            if(len(sortedDates)!=0):
+                ret[company][topic]=sortedDates[0]
+            else:
+                ret[company][topic]=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-'''
-    _LoadConfigFile: rssConfig.json의 내용을 파싱
-'''
-def _LoadConfigFile():
-    with open('./RSS/rssConfig.json', 'r', encoding='utf-8') as f:
-        global _jsonData
-        _jsonData = json.load(f)
+    with open('./RSS/lastPost.json', 'w', encoding='utf-8') as f:
+        json.dump(ret, f,ensure_ascii=False)
 
 '''
     _GetNewsArticle_Company: 입력된 언론사이름의 뉴스데이터를 가져온다.
@@ -52,7 +63,8 @@ def _GetNewsArticle_Company(company,printOption,skipCondition):
     }
 '''
 def GetNewsArticle_AllMediaCompany(printOption=True,skipCondition=None,postProcessFunc=None):
-    _LoadConfigFile()
+    global _jsonData
+    _jsonData=utils.LoadConfigFile('./RSS/rssConfig.json')
 
     retDict={}
     for companyNameENG in _jsonData.keys():
@@ -66,7 +78,11 @@ def GetNewsArticle_AllMediaCompany(printOption=True,skipCondition=None,postProce
         if(printOption):
             print('End: _GetNewsArticle_Company['+companyNameENG+']')
     
+    # 후처리
     if(postProcessFunc is not None):
         postProcessFunc(retDict)
     
+    # 최신 기사 숫자입력
+    _WriteLastPostJson(retDict)
+
     return retDict
