@@ -1,5 +1,7 @@
 import re
 import html
+import json
+from datetime import datetime
 
 def removeHtmlTags(text):
     clean = re.compile('<.*?>|</.*?>|<.*?/>')
@@ -19,3 +21,24 @@ def containHtmlEntities(text):
 
 def convertHtmlEntities(text):
     return html.unescape(text).replace('\xa0',' ')
+
+def LoadConfigFile(path):
+    with open(path, 'r', encoding='utf-8') as f:
+        _jsonData = json.load(f)
+        return _jsonData
+
+# time1이 더 빠르면 -1, 느리면 1, 같으면 0
+def CompareTimeStamp(time1,time2):
+    t1=datetime.strptime(time1, '%Y-%m-%d %H:%M:%S')
+    t2=datetime.strptime(time2, '%Y-%m-%d %H:%M:%S')
+
+    if(t1<t2):
+        return -1
+    elif(t1>t2):
+        return 1
+    else:
+        return 0
+    
+def ConvertRFC2822(s):
+    ret=datetime.strptime(s, '%a, %d %b %Y %H:%M:%S %z').strftime('%Y-%m-%d %H:%M:%S')
+    return ret
