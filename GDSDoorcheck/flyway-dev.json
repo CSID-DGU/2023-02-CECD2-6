@@ -24,6 +24,21 @@
         "schemas": [
           "root"
         ]
+      },
+      {
+        "connectionProvider": {
+          "type": "UsernamePassword",
+          "url": "jdbc:postgresql://127.0.0.1:7070/root",
+          "username": "root",
+          "password": {
+            "secretType": "DefaultSecretStore",
+            "name": "Flyway Desktop 6ab38e1a-053a-4339-a5a7-de8d7a3f5b30"
+          }
+        },
+        "schemas": [
+          "root"
+        ],
+        "displayName": "GDSDoorCheck"
       }
     ]
   }
