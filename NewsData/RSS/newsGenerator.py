@@ -64,7 +64,7 @@ def _GetNewsArticle_Company(company,printOption,skipCondition):
 '''
 def GetNewsArticle_AllMediaCompany(printOption=True,skipCondition=None,postProcessFunc=None):
     global _jsonData
-    _jsonData=utils.LoadConfigFile('./RSS/rssConfig.json')
+    _jsonData=utils.LoadJsonFile('./RSS/rssConfig.json')
 
     retDict={}
     for companyNameENG in _jsonData.keys():

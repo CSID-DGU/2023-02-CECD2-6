@@ -22,10 +22,13 @@ def containHtmlEntities(text):
 def convertHtmlEntities(text):
     return html.unescape(text).replace('\xa0',' ')
 
-def LoadConfigFile(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        _jsonData = json.load(f)
-        return _jsonData
+def LoadJsonFile(path):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            _jsonData = json.load(f)
+            return _jsonData
+    except FileNotFoundError:
+        return None
 
 # time1이 더 빠르면 -1, 느리면 1, 같으면 0
 def CompareTimeStamp(time1,time2):
