@@ -63,8 +63,12 @@ def PostProcessing(inputDict):
     입력: {"title"=title,"link"=link,"date"=date} Dictonary, 언론사 이름, 주제 이름
 '''
 def skipCondition(news,cName,cTopic):
-    lastPostDict = utils.LoadConfigFile('./RSS/lastPost.json')
+    lastPostDict = utils.LoadJsonFile('./RSS/lastPost.json')
     try:
+        # lastPost.json이 없으면 스킵을 하지 않는다.
+        if(lastPostDict is None):
+            return False
+
         if(utils.CompareTimeStamp(lastPostDict[cName][cTopic],news['date'])>=0):
             return True
     except Exception:
