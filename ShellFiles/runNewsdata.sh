@@ -1,0 +1,1 @@
+python3 $GDSPATH/NewsData/newsdata.py
