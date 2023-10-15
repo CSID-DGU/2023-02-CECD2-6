@@ -4,7 +4,7 @@ from importlib import import_module
 import datetime
 import RSS.utils as utils
 
-sys.path.append('./RSS/RssParser')
+sys.path.append(utils.getHomePath('NewsData/RSS/RssParser'))
 
 _jsonData ={}
  
@@ -22,7 +22,7 @@ def _WriteLastPostJson(d):
             else:
                 ret[company][topic]=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    with open('./RSS/lastPost.json', 'w', encoding='utf-8') as f:
+    with open(utils.getHomePath('NewsData/RSS/lastPost.json'), 'w', encoding='utf-8') as f:
         json.dump(ret, f,ensure_ascii=False)
 
 '''
@@ -64,7 +64,7 @@ def _GetNewsArticle_Company(company,printOption,skipCondition):
 '''
 def GetNewsArticle_AllMediaCompany(printOption=True,skipCondition=None,postProcessFunc=None):
     global _jsonData
-    _jsonData=utils.LoadJsonFile('./RSS/rssConfig.json')
+    _jsonData=utils.LoadJsonFile(utils.getHomePath('NewsData/RSS/rssConfig.json'))
 
     retDict={}
     for companyNameENG in _jsonData.keys():

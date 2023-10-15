@@ -1,6 +1,8 @@
 import re
 import html
 import json
+import os
+import sys
 from datetime import datetime
 
 def removeHtmlTags(text):
@@ -29,6 +31,11 @@ def LoadJsonFile(path):
             return _jsonData
     except FileNotFoundError:
         return None
+    
+def getHomePath(path):
+    home=os.environ.get('GDSPATH', os.environ.get('HOME'))
+    ret=os.path.join(home, path).replace('\\','/')
+    return ret
 
 # time1이 더 빠르면 -1, 느리면 1, 같으면 0
 def CompareTimeStamp(time1,time2):
