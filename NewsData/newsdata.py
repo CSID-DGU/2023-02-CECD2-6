@@ -22,12 +22,23 @@ def newsData():
                     title = str(news["title"])
                     link = news["link"]
                     context = news["context"]
+                    date = news["date"]
                     
                     # TextRank를 통한 키워드 추출 및 데이터베이스 저장
                     try:
                         keywords = TextRank(context)
-                        cur.execute("insert into news(companyname, topic, title, link, context, keywords) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, context, keywords))
+                        # cur.execute("insert into news(companyname, topic, title, link, context, keywords) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, context, keywords))
+                        cur.execute("insert into news(company_name, topic, title, link, context, post_time) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, context, date))
                         conn.commit()
+                        
+                        cur.execute("select id from news order by id desc limit 1;")
+                        row = cur.fetchone()
+                        
+                        id = row[0]
+                        
+                        for keyword in keywords:
+                            cur.execute("insert into newskeyword(news_id, keyword) values(%s, %s);", (id, keyword))
+                            conn.commit()
                     except UnicodeDecodeError: # 특수 문자에 대한 예외 처리
                         continue
                     except ValueError: # TextRank로 처리하기 힘든 적은 문자수의 기사의 경우 생략
