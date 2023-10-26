@@ -77,5 +77,5 @@ def skipCondition(news,cName,cTopic):
 
 def RSS():
     data_dict={}
-    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(True,skipCondition,PostProcessing)
+    data_dict = newsGenerator.GetNewsArticle_AllMediaCompany(False,skipCondition,PostProcessing)
     return data_dict
