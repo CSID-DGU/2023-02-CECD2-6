@@ -2,9 +2,21 @@ from RSS.RSS import RSS
 from textrank.TextRank import TextRank
 import json
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+env_path=os.environ.get('GDSPATH', os.environ.get('HOME'))+'\\NewsData\\DBConfig.env'
+env_path=env_path.replace('\\','/')
+load_dotenv(env_path)
+
+DB_CONNECT_HOST=os.environ.get("DB_HOST")
+DB_CONNECT_DBNAME=os.environ.get("DB_NAME")
+DB_CONNECT_USER=os.environ.get("DB_USER")
+DB_CONNECT_PWD=os.environ.get("DB_PWD")
+DB_CONNECT_PORT=os.environ.get("DB_PORT")
 
 # 데이터베이스 연결
-conn = psycopg2.connect(host="127.0.0.1", dbname="root", user="root", password="1234", port=5432)
+conn = psycopg2.connect(host=DB_CONNECT_HOST, dbname=DB_CONNECT_DBNAME, user=DB_CONNECT_USER, password=DB_CONNECT_PWD, port=int(DB_CONNECT_PORT))
 cur = conn.cursor()
 
 def newsData():
