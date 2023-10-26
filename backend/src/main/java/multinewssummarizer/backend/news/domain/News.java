@@ -1,4 +1,4 @@
-package multinewssummarizer.backend.domain.news;
+package multinewssummarizer.backend.news.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter @Setter
 @ToString
@@ -16,7 +18,7 @@ public class News {
     @Id @GeneratedValue
     private Long id;
 
-    @Column(name = "companyname", nullable = false)
+    @Column(nullable = false)
     private String companyName;
 
     @Column(nullable = false)
@@ -32,5 +34,5 @@ public class News {
     private String context;
 
     @Column(nullable = false)
-    private String keywords;
+    private LocalDateTime postTime;
 }
