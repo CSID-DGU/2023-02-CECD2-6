@@ -18,45 +18,46 @@ class Batch(object):
 
     def __init__(self, data=None, device=None, is_test=False):
         """Create a Batch from a list of examples."""
+        
         if data is not None:
             self.batch_size = len(data)
             pre_src = [x[0] for x in data]
-            pre_tgt = [x[1] for x in data]
-            pre_segs = [x[2] for x in data]
-            pre_clss = [x[3] for x in data]
-            pre_src_sent_labels = [x[4] for x in data]
+            #pre_tgt = [x[1] for x in data]
+            pre_segs = [x[1] for x in data]
+            pre_clss = [x[2] for x in data]
+            #pre_src_sent_labels = [x[4] for x in data]
 
             src = torch.tensor(self._pad(pre_src, 0))
-            tgt = torch.tensor(self._pad(pre_tgt, 0))
+            #tgt = torch.tensor(self._pad(pre_tgt, 0))
 
             segs = torch.tensor(self._pad(pre_segs, 0))
             # Upgrade pytorch version to 1.4
             # mask_src = 1 - (src == 0)
             # mask_tgt = 1 - (tgt == 0)
             mask_src = ~(src == 0)
-            mask_tgt = ~(tgt == 0)
+            #mask_tgt = ~(tgt == 0)
 
             clss = torch.tensor(self._pad(pre_clss, -1))
-            src_sent_labels = torch.tensor(self._pad(pre_src_sent_labels, 0))
+            #src_sent_labels = torch.tensor(self._pad(pre_src_sent_labels, 0))
             # Upgrade pytorch version to 1.4
             # mask_cls = 1 - (clss == -1)
             mask_cls = ~(clss == -1)
             clss[clss == -1] = 0
             setattr(self, "clss", clss.to(device))
             setattr(self, "mask_cls", mask_cls.to(device))
-            setattr(self, "src_sent_labels", src_sent_labels.to(device))
+            #setattr(self, "src_sent_labels", src_sent_labels.to(device))
 
             setattr(self, "src", src.to(device))
-            setattr(self, "tgt", tgt.to(device))
+            #setattr(self, "tgt", tgt.to(device))
             setattr(self, "segs", segs.to(device))
             setattr(self, "mask_src", mask_src.to(device))
-            setattr(self, "mask_tgt", mask_tgt.to(device))
+            #setattr(self, "mask_tgt", mask_tgt.to(device))
 
             if is_test:
-                src_str = [x[-2] for x in data]
+                src_str = [x[-1] for x in data]
                 setattr(self, "src_str", src_str)
-                tgt_str = [x[-1] for x in data]
-                setattr(self, "tgt_str", tgt_str)
+                #tgt_str = [x[-1] for x in data]
+                #setattr(self, "tgt_str", tgt_str)
 
     def __len__(self):
         return self.batch_size
@@ -120,7 +121,8 @@ def abs_batch_size_fn(new, count):
 def ext_batch_size_fn(new, count):
     if len(new) == 4:
         pass
-    src, labels = new[0], new[4]
+    #src, labels = new[0], new[4]
+    src = new[0]
     global max_n_sents, max_n_tokens, max_size
     if count == 1:
         max_size = 0
@@ -199,27 +201,27 @@ class DataIterator(object):
 
     def preprocess(self, ex, is_test):
         src = ex["src"]
-        tgt = ex["tgt"][: self.args.max_tgt_len][:-1] + [2]
-        src_sent_labels = ex["src_sent_labels"]
+        #tgt = ex["tgt"][: self.args.max_tgt_len][:-1] + [2]
+        #src_sent_labels = ex["src_sent_labels"]
         segs = ex["segs"]
         if not self.args.use_interval:
             segs = [0] * len(segs)
         clss = ex["clss"]
         src_txt = ex["src_txt"]
-        tgt_txt = ex["tgt_txt"]
+        #tgt_txt = ex["tgt_txt"]
 
         end_id = [src[-1]]
         src = src[:-1][: self.args.max_pos - 1] + end_id
         segs = segs[: self.args.max_pos]
         max_sent_id = bisect.bisect_left(clss, self.args.max_pos)
-        src_sent_labels = src_sent_labels[:max_sent_id]
+        #src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
 
         if is_test:
-            return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
+            return src, segs, clss, src_txt
         else:
-            return src, tgt, segs, clss, src_sent_labels
+            return src, segs, clss
 
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0
@@ -305,27 +307,27 @@ class TextDataloader(object):
 
     def preprocess(self, ex, is_test):
         src = ex["src"]
-        tgt = ex["tgt"][: self.args.max_tgt_len][:-1] + [2]
-        src_sent_labels = ex["src_sent_labels"]
+        #tgt = ex["tgt"][: self.args.max_tgt_len][:-1] + [2]
+        #src_sent_labels = ex["src_sent_labels"]
         segs = ex["segs"]
         if not self.args.use_interval:
             segs = [0] * len(segs)
         clss = ex["clss"]
         src_txt = ex["src_txt"]
-        tgt_txt = ex["tgt_txt"]
+        #tgt_txt = ex["tgt_txt"]
 
         end_id = [src[-1]]
         src = src[:-1][: self.args.max_pos - 1] + end_id
         segs = segs[: self.args.max_pos]
         max_sent_id = bisect.bisect_left(clss, self.args.max_pos)
-        src_sent_labels = src_sent_labels[:max_sent_id]
+        #src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
 
         if is_test:
-            return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
+            return src, segs, clss, src_txt
         else:
-            return src, tgt, segs, clss, src_sent_labels
+            return src, segs, clss
 
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0

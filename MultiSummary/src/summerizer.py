@@ -5,7 +5,14 @@ from prepro.preprocessor_kr import korean_sent_spliter, preprocess_kr
 import torch
 import numpy as np
 
-def summarize(rawData,args,cp):
+from models import data_loader
+from models.trainer_ext import build_trainer
+
+from others.logging import logger
+
+from tqdm import tqdm
+
+def summarize(rawData,args,device_id, cp, step):
     #data Json 형태로 바꾸어주기 
     json_list = []
     for article in rawData:
@@ -20,12 +27,31 @@ def summarize(rawData,args,cp):
     #print(json_list)
 
     bertData=json_to_bert(json_list,args)
-
-    summary_list=[]
-    for i in range(len(rawData)):
-        summary_list.append(predict_summary(bertData[i],rawData[i],args,cp))
     
-    return summary_list
+    #summary_list=[]
+    #for i in range(len(rawData)):
+    #    summary_list.append(predict_summary(bertData[i],rawData[i],args,cp))
+    #return summary_list
+
+    device = "cpu" if args.visible_gpus == '-1' else "cuda"
+
+    checkpoint = torch.load(cp)  # V3 - max_pos 1024
+    model = ExtSummarizer(args, device, checkpoint)
+    model.eval()
+
+    opt = vars(checkpoint['opt'])
+    model_flags = ['hidden_size', 'ff_size', 'heads', 'inter_layers', 'encoder', 'ff_actv', 'use_interval', 'rnn_size']
+    for k in opt.keys():
+        if (k in model_flags):
+            setattr(args, k, opt[k])
+
+    test_iter = data_loader.Dataloader(args, load_Bert(bertData),
+                                       args.test_batch_size, device,
+                                       shuffle=False, is_test=True)
+
+    trainer = build_trainer(args, device_id, model,None)
+    summarizedText=trainer.test(test_iter, step)
+    #print(summarizedText)
 
 #json bert 변환
 def json_to_bert(dataJson,args):
@@ -33,7 +59,7 @@ def json_to_bert(dataJson,args):
     jobs = dataJson
 
     datasets = []
-    for d in jobs:
+    for d in tqdm(jobs, desc="bert 변환 중"):
         source = d["src"]
         source = [" ".join(s).lower().split() for s in source]
         
@@ -61,6 +87,17 @@ def json_to_bert(dataJson,args):
     #print(datasets)
     return datasets
 
+#BertData load
+def load_Bert(Bert):
+    def _lazy_dataset_loader(Bert):
+
+        logger.info(
+            "number of examples: %d"
+            % (len(Bert))
+        )
+        return Bert
+
+    yield _lazy_dataset_loader(Bert)
 
 #예측부
 def predict_summary(bertData,rawData,args,cp):
@@ -96,6 +133,7 @@ def predict_summary(bertData,rawData,args,cp):
         print(sent_scores)
         selected_ids = np.argsort(-sent_scores, 1)
         print(selected_ids)
+
 
     #print(selected_ids)
 

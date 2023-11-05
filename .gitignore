@@ -3,3 +3,8 @@ NewsData/**/output.json
 NewsData/**/lastPost.json
 NewsData/**/DBConfig.env
 ShellLogs/runNewsdata.log
+
+#git ignore for MultiSummary
+MultiSummary/**/*.log
+MultiSummary/**/*.pt  
+MultiSummary/models
