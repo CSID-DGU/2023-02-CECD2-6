@@ -18,14 +18,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        env:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image to Docker Hub
         run: |
-          docker build --platform linux/amd64 -t $username/gds_backend:latest .
-          docker push $username/gds_backend:latest
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
 
       - name: SSH into EC2 and pull the Docker image
         uses: appleboy/ssh-action@v1.0.0
@@ -37,6 +34,6 @@ jobs:
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull $username/gds_backend:latest
-            docker run -it --name gds_backend -p 8080:8080 $username/gds_backend:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+            docker run -it --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
 
