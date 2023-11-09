@@ -35,5 +35,5 @@ jobs:
           proxy_key: ${{ secrets.SSH_KEY }}
           script: |
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
-            docker run -it --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+            docker run -i --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
 
