@@ -34,6 +34,9 @@ jobs:
           proxy_username: ${{ secrets.EC2_USERNAME }}
           proxy_key: ${{ secrets.SSH_KEY }}
           script: |
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+            docker rmi $(docker images -q)
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
             docker run -i --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
 
