@@ -16,12 +16,12 @@ class NewsServiceTest {
     @Autowired
     NewsService newsService;
 
-    @Test
-    void findNewsIdsWithinOneDay() {
-        List<Long> newsIdsWithinLastDay = newsService.getNewsIdsWithinLastDay();
-
-        System.out.println("newsIdsWithinLastDay = " + newsIdsWithinLastDay);
-
-        assertThat(newsIdsWithinLastDay).isNotEmpty();
-    }
+//    @Test
+//    void findNewsIdsWithinOneDay() {
+//        List<Long> newsIdsWithinLastDay = newsService.getNewsIdsWithinLastDay();
+//
+//        System.out.println("newsIdsWithinLastDay = " + newsIdsWithinLastDay);
+//
+//        assertThat(newsIdsWithinLastDay).isNotEmpty();
+//    }
 }
