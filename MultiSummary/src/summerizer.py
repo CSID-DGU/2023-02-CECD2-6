@@ -12,6 +12,9 @@ from others.logging import logger
 
 from tqdm import tqdm
 
+import networkx as nx
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 def summarize(rawData,args,device_id, cp, step):
     #data Json 형태로 바꾸어주기 
     json_list = []
@@ -51,7 +54,56 @@ def summarize(rawData,args,device_id, cp, step):
 
     trainer = build_trainer(args, device_id, model,None)
     summarizedText=trainer.test(test_iter, step)
-    #print(summarizedText)
+    print(summarizedText)
+
+    conbinedText=textRank(summarizedText)
+    print(conbinedText)
+
+    '''
+    #Bert를 이용하는 방법
+    print(len(conbinedText))
+    json_list = []
+    for article in [conbinedText]:
+        src_sents = (
+            article
+            if isinstance(article, list)
+            else korean_sent_spliter(article)
+        )
+        original_sents_list = [preprocess_kr(sent).split() for sent in src_sents]
+
+        json_list.append({"src": original_sents_list})
+    #print(json_list)
+
+    bertData=json_to_bert(json_list,args)
+    
+    #summary_list=[]
+    #for i in range(len(rawData)):
+    #    summary_list.append(predict_summary(bertData[i],rawData[i],args,cp))
+    #return summary_list
+    print(bertData)
+    device = "cpu" if args.visible_gpus == '-1' else "cuda"
+
+    checkpoint = torch.load(cp)  # V3 - max_pos 1024
+    model = ExtSummarizer(args, device, checkpoint)
+    model.eval()
+
+    opt = vars(checkpoint['opt'])
+    model_flags = ['hidden_size', 'ff_size', 'heads', 'inter_layers', 'encoder', 'ff_actv', 'use_interval', 'rnn_size']
+    for k in opt.keys():
+        if (k in model_flags):
+            setattr(args, k, opt[k])
+
+    test_iter = data_loader.Dataloader(args, load_Bert(bertData),
+                                       args.test_batch_size, device,
+                                       shuffle=False, is_test=True)
+
+    trainer = build_trainer(args, device_id, model,None)
+    conbinedText=trainer.combine_summarizer(test_iter, step)
+    #print(conbinedText)
+
+
+
+    #'''
 
 #json bert 변환
 def json_to_bert(dataJson,args):
@@ -147,3 +199,33 @@ def _pad(data, pad_id, width=-1):
         width = max(len(d) for d in data)
     rtn_data = [d + [pad_id] * (width - len(d)) for d in data]
     return rtn_data
+
+#textRank를 이용한 요약문 결합
+def textRank(summarizedText):
+    conbinedText=[]
+    for  ariticle in summarizedText:
+        for text in  ariticle:
+            conbinedText.append(text)
+
+    # TF-IDF 벡터화
+    tfidf = TfidfVectorizer()
+    tfidf_matrix = tfidf.fit_transform(conbinedText)
+
+    # 문장 간 유사도 계산 (cosine similarity)
+    similarity_matrix = (tfidf_matrix * tfidf_matrix.T).A
+    graph = nx.from_numpy_array(similarity_matrix)
+
+    # TextRank 스코어 계산
+    scores = nx.pagerank(graph)
+    print(scores)
+
+    # 문장을 TextRank 스코어에 따라 정렬
+    ranked_sentences = sorted(((scores[i], sentence) for i, sentence in enumerate(conbinedText)), reverse=True)
+
+    conbinedText=[]
+    for i, (score, sentence) in enumerate(ranked_sentences):
+        print(f"Sentence {i + 1}: Score: {score:.4f}, Sentence: {sentence}")
+        conbinedText.append(sentence)
+
+    #print(conbinedText)
+    return conbinedText
