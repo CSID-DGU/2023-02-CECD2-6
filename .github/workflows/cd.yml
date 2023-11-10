@@ -1,0 +1,42 @@
+name: Build and Deploy to EC2
+
+on:
+  push:
+    branches:
+      [ main, development ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image to Docker Hub
+        run: |
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+
+      - name: SSH into EC2 and pull the Docker image
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_PRIVATE_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          proxy_host: ${{ secrets.EC2_PUBLIC_IP }}
+          proxy_username: ${{ secrets.EC2_USERNAME }}
+          proxy_key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+            docker rmi $(docker images -q)
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+            docker run -d --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+
