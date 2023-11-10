@@ -38,5 +38,5 @@ jobs:
             docker rm $(docker ps -a -q)
             docker rmi $(docker images -q)
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
-            docker run -i --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
+            docker run -d --name gds_backend -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/gds_backend:latest
 
