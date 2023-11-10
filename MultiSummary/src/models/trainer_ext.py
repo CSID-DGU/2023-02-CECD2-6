@@ -366,6 +366,132 @@ class Trainer(object):
 
         return pred
     
+    def combine_summarizer (self, test_iter, step, cal_lead=False, cal_oracle=False):
+        """Validate model.
+            valid_iter: validate data iterator
+        Returns:
+            :obj:`nmt.Statistics`: validation loss statistics
+        """
+
+        # Set model in validating mode.
+        def _get_ngrams(n, text):
+            ngram_set = set()
+            text_length = len(text)
+            max_index_ngram_start = text_length - n
+            for i in range(max_index_ngram_start + 1):
+                ngram_set.add(tuple(text[i : i + n]))
+            return ngram_set
+
+        def _block_tri(c, p):
+            tri_c = _get_ngrams(3, c.split())
+            for s in p:
+                tri_s = _get_ngrams(3, s.split())
+                if len(tri_c.intersection(tri_s)) > 0:
+                    return True
+            return False
+        
+        def _pad(data, pad_id, width=-1):
+            if (width == -1):
+                width = max(len(d) for d in data)
+            rtn_data = [d + [pad_id] * (width - len(d)) for d in data]
+            return rtn_data
+        
+        if not cal_lead and not cal_oracle:
+            self.model.eval()
+        stats = Statistics()
+
+        with torch.no_grad():            
+            pred = []
+            pred_idx = []
+            
+            for batch in tqdm(test_iter,desc="결합 중"):
+                print('a')
+                # import pdb; pdb.set_trace()
+                src = batch.src#
+                #labels = batch.src_sent_labels
+                segs = batch.segs#
+                clss = batch.clss#
+                mask = batch.mask_src#
+                mask_cls = batch.mask_cls#
+
+
+                print( src )
+                print(clss)
+                sent_scores, mask = self.model(
+                    src, segs, clss, mask, mask_cls
+                )
+
+                device=torch.device("cpu")
+                pre_src_sent_labels=[[1,1,1,1,1,1,1,1,1,1,1]]
+                labels = torch.tensor(_pad(pre_src_sent_labels, 0))
+                setattr(self, "labels", labels.to(device))
+                print(labels)
+
+                loss = self.loss(sent_scores, labels.float())
+                loss = (loss * mask.float()).sum()
+                batch_stats = Statistics(
+                    float(loss.cpu().data.numpy()), len(src)
+                )
+                stats.update(batch_stats)
+                print(sent_scores)
+                print(mask.float())
+                sent_scores = sent_scores + mask.float()
+                sent_scores = sent_scores.cpu().data.numpy()
+                print(sent_scores)
+                selected_ids = np.argsort(-sent_scores, 1)
+
+                # selected_ids = np.sort(selected_ids,1)
+                
+                print(selected_ids)
+                
+                print(batch.src_str)
+
+                #arranged_sentences = [batch.src_str[0][i] for i in selected_ids[0]]
+                #print(arranged_sentences)
+                
+                #요약문 추출
+                for i in range(len(selected_ids)):
+                    _pred = []
+                    _pred_idx = []
+                    if len(batch.src_str[i]) == 0:
+                        continue
+
+                    summary_ratio = 0.4 #요약 비율 
+                    total_sentences= len(batch.src_str[i]) #전체 문장수 
+                    num_summary_sentences = total_sentences
+                    print(f'전체 문장수: {total_sentences}')
+                    print(f'요약문장수: {num_summary_sentences}')
+                    for j in selected_ids[i]:
+                        if j >= len(batch.src_str[i]):
+                            continue
+                        candidate = batch.src_str[i][j].strip()
+                        if self.args.block_trigram:
+                            if not _block_tri(candidate, _pred):
+                                _pred.append(candidate)
+                                _pred_idx.append(j)
+                        else:
+                            _pred.append(candidate)
+                            _pred_idx.append(j)
+
+                        if (
+                            (not cal_oracle)
+                            and (not self.args.recall_eval)
+                            and len(_pred) == num_summary_sentences 
+                        ):
+                            break
+
+
+                    pred.append(_pred)
+                    pred_idx.append(_pred_idx)
+                    #print(_pred)
+            
+
+            for i in range(len(pred)):
+                print(f"\n요약 #{i+1}")
+                print(pred[i])
+                print(pred_idx[i])
+
+        return pred
     '''
     def test(self, test_iter, step, cal_lead=False, cal_oracle=False):
         """Validate model.
