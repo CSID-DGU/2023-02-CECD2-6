@@ -14,6 +14,7 @@ from tqdm import tqdm
 
 import networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 def summarize(rawData,args,device_id, cp, step):
     #data Json 형태로 바꾸어주기 
@@ -54,11 +55,13 @@ def summarize(rawData,args,device_id, cp, step):
 
     trainer = build_trainer(args, device_id, model,None)
     summarizedText=trainer.test(test_iter, step)
-    print(summarizedText)
+    print(f'단일 요약문:{summarizedText}\n')
 
     conbinedText=textRank(summarizedText)
-    print(conbinedText)
-
+    print(f'중요도 순으로 결합한 요약문:{conbinedText}\n')
+    
+    result = remove_duplicateSentence(conbinedText)
+    print(f'최종 요약문: {result}\n')
     '''
     #Bert를 이용하는 방법
     print(len(conbinedText))
@@ -229,3 +232,58 @@ def textRank(summarizedText):
 
     #print(conbinedText)
     return conbinedText
+
+def mmr_score(query, sentence, lambda_param=0.7):
+    # TF-IDF 벡터화
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([query, sentence])
+
+    # 코사인 유사도 계산
+    similarity = cosine_similarity(tfidf_matrix)[0][1]
+
+    # 문장 길이 비율 계산
+    length_ratio = len(sentence.split()) / len(query.split())
+    query_length = len(query.split())
+    
+    # MMR 스코어 계산 (수정)
+    mmr_score = lambda_param * similarity - (1 - lambda_param) * (length_ratio / query_length)
+
+    return mmr_score
+
+def remove_duplicateSentence(sentences):
+    result=[sentences[0]]
+    regard=[]
+    # MMR 스코어를 기준으로 중복을 걸러냄
+    for i,sentence in enumerate(sentences[1:], start=1):
+        query_sentence=sentence
+        mmr_scores = [mmr_score(query_sentence, s) for s in sentences]
+        
+        # MMR 스코어가 가장 높은 문장 선택
+        max_score_index =max(((idx, val) for idx, val in enumerate(mmr_scores) if idx != i), key=lambda x: x[1])[0]
+        max_score_sentence = list(sentences)[max_score_index]
+        #print(f'제시문:{sentence}')
+        #print(f'해당 문장과 가장 비슷하다고 여겨지는 문장: {max_score_sentence}={max_score_index}번째 줄')
+        #print(mmr_scores)
+
+        #비슷하다고 여겨지는 문장이 결과문에 존재하지 않으면 현재 쿼리가 되는 문장을 넣어줌
+        if max_score_sentence not in result:
+            result.append(query_sentence)
+
+        #주제와 벗어난 문장 처리하기
+        total_sentences= len(sentences) #전체 문장수 
+        unrelated_sentence = int(total_sentences * 0.4)
+        count_below_minus_5 = sum(1 for value in mmr_scores if value <= -0.5) #이 부분 숫자 전체 뮨장 비율로 나타내주
+
+        #관련도가 없다고 여긴 문장이 전체의 40%면 제거할 대상으로 들어감
+        if count_below_minus_5 >= unrelated_sentence:
+            regard.append(query_sentence)
+
+
+
+    #관련도가 없는 문장들은 결과문에서 제거해줌
+    #print(regard)
+    for element in regard:
+        if element in result:
+            result.remove(element)
+
+    return result
