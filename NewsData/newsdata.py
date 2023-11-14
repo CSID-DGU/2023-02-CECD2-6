@@ -3,6 +3,7 @@ from textrank.TextRank import TextRank
 import json
 import psycopg2
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 
 env_path=os.environ.get('GDSPATH', os.environ.get('HOME'))+'\\NewsData\\DBConfig.env'
@@ -57,5 +58,9 @@ def newsData():
                         continue
                     
                     
-    
-newsData()
+try:
+    print(f'Start At [{datetime.now().strftime('%H:%M:%S')}]')
+    newsData()
+    print('newsData - executed successfully')
+except Exception as e:
+    print('newsData - failed')
