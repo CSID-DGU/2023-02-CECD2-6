@@ -1,12 +1,13 @@
+#-*- coding: utf-8 -*-
 from RSS.RSS import RSS
 from textrank.TextRank import TextRank
 import json
 import psycopg2
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-env_path=os.environ.get('GDSPATH', os.environ.get('HOME'))+'\\NewsData\\DBConfig.env'
+env_path=os.environ.get('GDSPATH', os.environ.get('HOME')+'\\2023-02-CECD2-6')+'\\NewsData\\DBConfig.env'
 env_path=env_path.replace('\\','/')
 load_dotenv(env_path)
 
@@ -59,7 +60,7 @@ def newsData():
                     
                     
 try:
-    print(f'Start At [{datetime.now().strftime('%H:%M:%S')}]')
+    print(f"Start At [{datetime.now().strftime('%H:%M:%S')}]")
     newsData()
     print('newsData - executed successfully')
 except Exception as e:

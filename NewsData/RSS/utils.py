@@ -33,7 +33,7 @@ def LoadJsonFile(path):
         return None
     
 def getHomePath(path):
-    home=os.environ.get('GDSPATH', os.environ.get('HOME'))
+    home=os.environ.get('GDSPATH', os.environ.get('HOME')+'\\2023-02-CECD2-6')
     ret=os.path.join(home, path).replace('\\','/')
     return ret
 
