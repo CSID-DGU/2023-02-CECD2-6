@@ -1,6 +1,7 @@
 import RSS.newsGenerator as newsGenerator
 import json
 import RSS.utils as utils
+from datetime import datetime, timedelta
 
 # 테스트용 import
 import time
@@ -65,10 +66,15 @@ def PostProcessing(inputDict):
 def skipCondition(news,cName,cTopic):
     lastPostDict = utils.LoadJsonFile(utils.getHomePath('NewsData/RSS/lastPost.json'))
     try:
+        # 포스트 시간은 지금부터 하루전
+        if(utils.CompareTimeStamp((datetime.now()-timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"),news['date'])>=0):
+            return True
+
         # lastPost.json이 없으면 스킵을 하지 않는다.
         if(lastPostDict is None):
             return False
 
+        # 마지막 포스팅 시간보다 빠르게 나온 기사는 스킵
         if(utils.CompareTimeStamp(lastPostDict[cName][cTopic],news['date'])>=0):
             return True
     except Exception:
