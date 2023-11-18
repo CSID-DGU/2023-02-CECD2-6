@@ -11,7 +11,7 @@ from multiSummarizer.clustering import Custer
 import kss
 from summerizer import summarize
 from others.logging import init_logger
-
+import yaml
 import psycopg2
 
 # from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs
@@ -166,13 +166,19 @@ if __name__ == "__main__":
     device_id = 0 if device == "cuda" else -1
 
     # PostgreSQL 데이터베이스 연결 정보
+    with open('../config/DBCongif.yaml', 'r') as yaml_file:
+        config_data = yaml.safe_load(yaml_file)
+
+    print(config_data.get('host'))
+    # PostgreSQL 연결 정보
     db_config = {
-        'host': '172.30.246.216',
-        'database': 'postgres',
-        'user': 'postgres',
-        'password': '11223344',
-        'port': 5432
+        'host': config_data.get('host', 'localhost'),
+        'database': config_data.get('database', 'postgres'),
+        'user': config_data.get('user', 'postgres'),
+        'password': config_data.get('password', ''),
+        'port': config_data.get('port', 5432)
     }
+
     documents=[]
     try:
         # PostgreSQL에 연결
@@ -194,7 +200,8 @@ if __name__ == "__main__":
             article_list = [item.strip() for item in article_str.strip('{}').split(',')]
             documents.append(article_list)
             
-            print(f'{i}번째 기사:\n{article_list}\n')
+            #print(f'{i}번째 기사:\n{article_list}\n')
+        
 
     except Exception as e:
         print(f"Error: {e}")
@@ -207,7 +214,6 @@ if __name__ == "__main__":
             cursor.close()
 
     #DB에서 가져온 값으로 클러스터링
-
     articles_by_topic=Custer(documents).hierachyClustering()
     
     for i, articles in enumerate(articles_by_topic.values()):
