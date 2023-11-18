@@ -55,13 +55,14 @@ def summarize(rawData,args,device_id, cp, step):
 
     trainer = build_trainer(args, device_id, model,None)
     summarizedText=trainer.test(test_iter, step)
-    print(f'단일 요약문:{summarizedText}\n')
+    #print(f'단일 요약문:{summarizedText}\n')
 
     conbinedText=textRank(summarizedText)
-    print(f'중요도 순으로 결합한 요약문:{conbinedText}\n')
+    #print(f'중요도 순으로 결합한 요약문:{conbinedText}\n')
     
     result = remove_duplicateSentence(conbinedText)
-    print(f'최종 요약문: {result}\n')
+    #print(f'최종 요약문: {result}\n')
+    return result
     '''
     #Bert를 이용하는 방법
     print(len(conbinedText))
@@ -220,14 +221,14 @@ def textRank(summarizedText):
 
     # TextRank 스코어 계산
     scores = nx.pagerank(graph)
-    print(scores)
+    #print(scores)
 
     # 문장을 TextRank 스코어에 따라 정렬
     ranked_sentences = sorted(((scores[i], sentence) for i, sentence in enumerate(conbinedText)), reverse=True)
 
     conbinedText=[]
     for i, (score, sentence) in enumerate(ranked_sentences):
-        print(f"Sentence {i + 1}: Score: {score:.4f}, Sentence: {sentence}")
+        #print(f"Sentence {i + 1}: Score: {score:.4f}, Sentence: {sentence}")
         conbinedText.append(sentence)
 
     #print(conbinedText)

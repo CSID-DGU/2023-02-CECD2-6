@@ -346,17 +346,11 @@ class Trainer(object):
                     pred.append(_pred)
                     pred_idx.append(_pred_idx)
                     #print(_pred)
-
-            for i in range(len(pred)):
+            #결과 출력 
+            '''for i in range(len(pred)):
                 print(f"\n요약 #{i+1}")
                 print(pred[i])
-                print(pred_idx[i])
-            #결과 출력    
-            #for i in range(len(pred)):
-            #    sents = pred[i].split("<q>")
-            #    for sent in sents:
-            #        print("<t>" + sent + "<\t>")
-
+                print(pred_idx[i])'''
 
         #if step != -1 and self.args.report_rouge:
         #    rouges = test_rouge(self.args.temp_dir, can_path, gold_file_path)

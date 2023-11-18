@@ -39,6 +39,34 @@
           "root"
         ],
         "displayName": "GDSDoorCheck"
+      },
+      {
+        "connectionProvider": {
+          "type": "UsernamePassword",
+          "url": "jdbc:postgresql://172.30.246.216:5432/",
+          "username": "postgres",
+          "password": {
+            "secretType": "DefaultSecretStore",
+            "name": "Flyway Desktop 2fb619cc-9642-484c-bd05-2fc9ce0112ff"
+          }
+        },
+        "schemas": [
+          "root"
+        ]
+      },
+      {
+        "connectionProvider": {
+          "type": "UsernamePassword",
+          "url": "jdbc:postgresql://172.30.246.216/postgres",
+          "username": "postgres",
+          "password": {
+            "secretType": "DefaultSecretStore",
+            "name": "Flyway Desktop c48dd018-c433-43aa-850b-d46226014efa"
+          }
+        },
+        "schemas": [
+          "root"
+        ]
       }
     ]
   }
