@@ -64,5 +64,7 @@ if __name__ == "__main__":
             f" -report_rouge False -max_tgt_len 100 -make_gold {args.make_gold} -use_model {use_model}")
 
         do_str += param
+        print( param)
+        print(do_str)
 
         os.system(do_str)
