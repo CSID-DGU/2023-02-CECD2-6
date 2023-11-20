@@ -252,7 +252,7 @@ class Trainer(object):
         with torch.no_grad():            
             pred = []
             pred_idx = []
-            for batch in tqdm(test_iter,desc="요약 중"):
+            for batch in test_iter:
                 # import pdb; pdb.set_trace()
                 src = batch.src#
                 #labels = batch.src_sent_labels
@@ -291,8 +291,8 @@ class Trainer(object):
                     summary_ratio = 0.4 #요약 비율 
                     total_sentences= len(batch.src_str[i]) #전체 문장수 
                     num_summary_sentences = int(total_sentences * summary_ratio) # 요약에 사용할 문장수 
-                    print(f'전체 문장수: {total_sentences}')
-                    print(f'요약문장수: {num_summary_sentences}')
+                    #print(f'전체 문장수: {total_sentences}')
+                    #print(f'요약문장수: {num_summary_sentences}')
                     for j in selected_ids[i][:num_summary_sentences]:
                         if j >= len(batch.src_str[i]):
                             continue

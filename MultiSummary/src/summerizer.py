@@ -10,8 +10,6 @@ from models.trainer_ext import build_trainer
 
 from others.logging import logger
 
-from tqdm import tqdm
-
 import networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -52,7 +50,7 @@ def summarize(rawData,args,device_id, cp, step):
     test_iter = data_loader.Dataloader(args, load_Bert(bertData),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    print( device_id)
+    
     trainer = build_trainer(args, device_id, model,None)
     summarizedText=trainer.test(test_iter, step)
     #print(f'단일 요약문:{summarizedText}\n')
@@ -115,7 +113,7 @@ def json_to_bert(dataJson,args):
     jobs = dataJson
 
     datasets = []
-    for d in tqdm(jobs, desc="bert 변환 중"):
+    for d in jobs:
         source = d["src"]
         source = [" ".join(s).lower().split() for s in source]
         

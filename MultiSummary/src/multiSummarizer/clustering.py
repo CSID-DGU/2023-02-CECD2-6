@@ -6,6 +6,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import Normalizer
 
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+from sklearn.metrics import adjusted_rand_score, silhouette_score, davies_bouldin_score, calinski_harabasz_score
+
 
 class Custer:
     def __init__(self, documents):
@@ -94,3 +99,103 @@ class Custer:
 
         #print(topic_clusters)
         return article_clusters
+    
+    def silhouette_analysis(self, max_k):
+        article_without_newlines=self.make_article_without_newlines()
+        #tf-idf 임베딩(+Normalize)
+        tfidf_vectorizer = TfidfVectorizer(min_df = 3, ngram_range=(1,5))
+        tfidf_vectorizer.fit(article_without_newlines)
+        vector = tfidf_vectorizer.transform(article_without_newlines).toarray()
+
+        normalizer = Normalizer()
+        vector = normalizer.fit_transform(vector)
+    
+        silhouette_scores = []
+        for k in range(2, max_k + 1):
+            kmeans = KMeans(n_clusters=k, random_state=42)
+            labels = kmeans.fit_predict(vector)
+            silhouette_avg = silhouette_score(vector, labels)
+            silhouette_scores.append(silhouette_avg)
+        
+        # Find the optimal K based on Silhouette Score
+        optimal_k = np.argmax(silhouette_scores) + 2  # +2 because the loop starts from k=2
+
+        # K-means clustering with the optimal K
+        kmeans_optimal = KMeans(n_clusters=optimal_k, random_state=42)
+        labels_optimal = kmeans_optimal.fit_predict(vector)
+
+        # Organize sentences into clusters
+        clustered_sentences = [[] for _ in range(optimal_k)]
+        for i in range(optimal_k):
+            clustered_sentences[i] = list(np.array(article_without_newlines)[labels_optimal == i])
+
+        article_clusters = {}
+        # 주제별로 클러스터링된 인덱스를 사용하여 기사들을 그룹화
+        for indices,topic in enumerate(clustered_sentences):
+            article_clusters[indices] = topic
+
+        return article_clusters
+    
+    def silhouette_analysis_with_score(self, max_k):
+        article_without_newlines=self.make_article_without_newlines()
+        #tf-idf 임베딩(+Normalize)
+        tfidf_vectorizer = TfidfVectorizer(min_df = 3, ngram_range=(1,5))
+        tfidf_vectorizer.fit(article_without_newlines)
+        vector = tfidf_vectorizer.transform(article_without_newlines).toarray()
+
+        normalizer = Normalizer()
+        vector = normalizer.fit_transform(vector)
+    
+        silhouette_scores = []
+        for k in range(2, max_k + 1):
+            kmeans = KMeans(n_clusters=k, random_state=42)
+            labels = kmeans.fit_predict(vector)
+            silhouette_avg = silhouette_score(vector, labels)
+            silhouette_scores.append(silhouette_avg)
+        
+        # Find the optimal K based on Silhouette Score
+        optimal_k = np.argmax(silhouette_scores) + 2  # +2 because the loop starts from k=2
+        print(f"Optimal K based on Silhouette Score: {optimal_k}")
+
+        # K-means clustering with the optimal K
+        kmeans_optimal = KMeans(n_clusters=optimal_k, random_state=42)
+        labels_optimal = kmeans_optimal.fit_predict(vector)
+
+        # Output clustering results
+        for i in range(optimal_k):
+            cluster_sentences = np.array(article_without_newlines)[labels_optimal == i]
+            print(f"Cluster {i + 1}:")
+            print(cluster_sentences)
+            print("\n")
+
+        # Plotting Silhouette Score
+        plt.plot(range(2, max_k + 1), silhouette_scores, marker='o')
+        plt.title('Silhouette Score Analysis')
+        plt.xlabel('Number of clusters (K)')
+        plt.ylabel('Silhouette Score')
+        plt.show()
+
+        # Simulated true labels (replace with actual labels if available)
+        true_labels = np.zeros(len(article_without_newlines))
+        # Silhouette Score
+        silhouette_avg = silhouette_score(vector, labels)
+        print(f"Silhouette Score for K={k}: {silhouette_avg}")
+        # Davies-Bouldin Index
+        db_index = davies_bouldin_score(vector, labels)
+        print(f"Davies-Bouldin Index for K={k}: {db_index}")
+        # Calinski-Harabasz Index
+        ch_index = calinski_harabasz_score(vector, labels)
+        print(f"Calinski-Harabasz Index for K={k}: {ch_index}")
+
+        # Organize sentences into clusters
+        clustered_sentences = [[] for _ in range(optimal_k)]
+        for i in range(optimal_k):
+            clustered_sentences[i] = list(np.array(article_without_newlines)[labels_optimal == i])
+
+        article_clusters = {}
+        # 주제별로 클러스터링된 인덱스를 사용하여 기사들을 그룹화
+        for indices,topic in enumerate(clustered_sentences):
+            article_clusters[indices] = topic
+
+        return article_clusters
+    
