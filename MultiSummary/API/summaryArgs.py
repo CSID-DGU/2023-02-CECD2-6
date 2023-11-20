@@ -100,7 +100,6 @@ def parse_args():
     args.world_size = len(args.gpu_ranks)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.visible_gpus
 
-    print(args)
     init_logger(args.log_file)
 
     cp = args.test_from
