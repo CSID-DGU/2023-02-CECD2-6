@@ -11,8 +11,8 @@ import time
 
 sys.path.append("../src")
 from summerizer import summarize
-
 from multiSummarizer.clustering import Custer
+from multiSummarizer.suffix_unification  import convert_to_formal_korean
 
 app = FastAPI()
 
@@ -42,7 +42,8 @@ async def createSummary(number_list: NumberList):
             data.append(kss.split_sentences(article))
        
         summary=summarize(data,args, device_id, cp, step)
-        summarys.append(summary)
+        converted_summary = convert_to_formal_korean(' '.join(summary))
+        summarys.append(converted_summary)
         
         #군집별 Rouge Score 계산(필요시 주석 제거)
         '''    
