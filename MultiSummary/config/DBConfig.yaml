@@ -1,5 +1,10 @@
-host: 172.30.246.216
-database: postgres
-user: postgres
-password: 11223344
-port: 5432
+SSH_HOST: 3.34.253.81
+SSH_PORT: 22
+SSH_USERNAME: ubuntu
+SSH_PRIVATE_KEY: C:/Users/son/.ssh/gds2023.pem
+
+DB_HOST: 10.0.139.211
+DB_PORT: 5432
+DB_USER: root
+DB_PASSWORD: 1234
+DB_NAME: gds_database

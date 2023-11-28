@@ -211,7 +211,17 @@ def textRank(summarizedText):
 
     # TF-IDF 벡터화
     tfidf = TfidfVectorizer()
-    tfidf_matrix = tfidf.fit_transform(conbinedText)
+    try:
+        tfidf_matrix = tfidf.fit_transform(conbinedText)
+    except ValueError as e:
+        # 불용어만 있는 경우 무시하고 계속 진행
+        print("pass")
+        if "empty vocabulary; perhaps the documents only contain stop words" in str(e):
+            tfidf_matrix = None
+            return summarizedText
+        else:
+            return summarizedText
+    #tfidf_matrix = tfidf.fit_transform(conbinedText)
 
     # 문장 간 유사도 계산 (cosine similarity)
     similarity_matrix = (tfidf_matrix * tfidf_matrix.T).A

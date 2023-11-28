@@ -8,3 +8,5 @@ ShellLogs/runNewsdata.log
 MultiSummary/**/*.log
 MultiSummary/**/*.pt  
 MultiSummary/models
+
+MultiSummary/API/gds2023/gds2023.pem
