@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class NewsServiceTest {
@@ -16,12 +15,12 @@ class NewsServiceTest {
     @Autowired
     NewsService newsService;
 
-//    @Test
-//    void findNewsIdsWithinOneDay() {
-//        List<Long> newsIdsWithinLastDay = newsService.getNewsIdsWithinLastDay();
-//
-//        System.out.println("newsIdsWithinLastDay = " + newsIdsWithinLastDay);
-//
-//        assertThat(newsIdsWithinLastDay).isNotEmpty();
-//    }
+    @Test
+    void findNewsIdsWithinOneDay() {
+        List<Long> newsIdsWithinLastDay = newsService.getNewsIdsWithinLastDay();
+
+        System.out.println("newsIdsWithinLastDay = " + newsIdsWithinLastDay);
+
+        assertThat(newsIdsWithinLastDay).isNotEmpty();
+    }
 }
