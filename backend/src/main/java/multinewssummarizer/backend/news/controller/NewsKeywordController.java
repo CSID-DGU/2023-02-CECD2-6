@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class NewsKeywordController {
 
-    @Autowired
-    private NewsKeywordComplexService newsKeywordComplexService;
+    private final NewsKeywordComplexService newsKeywordComplexService;
 
     @GetMapping("/getKeywords")
     public Map<String, Integer> getKeywords() {

@@ -16,12 +16,12 @@ class NewsKeywordComplexServiceTest {
     @Autowired
     NewsKeywordComplexService newsKeywordComplexService;
 
-//    @Test
-//    void findNewsKeywordsWithinOneDay() {
-//        List<NewsKeywordDTO> keywordsWithinDay = newsKeywordComplexService.findKeywordsWithinDay();
-//
-//        System.out.println("keywordsWithinDay = " + keywordsWithinDay);
-//
-////        Assertions.assertThat(keywordsWithinDay).isNotEmpty();
-//    }
+    @Test
+    void findNewsKeywordsWithinOneDay() {
+        List<NewsKeywordDTO> keywordsWithinDay = newsKeywordComplexService.findKeywordsWithinDay();
+
+        System.out.println("keywordsWithinDay = " + keywordsWithinDay);
+
+        Assertions.assertThat(keywordsWithinDay).isNotEmpty();
+    }
 }
