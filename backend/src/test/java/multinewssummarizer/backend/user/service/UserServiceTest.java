@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +31,9 @@ class UserServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    String pattern = "yyyy-MM-dd";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+
     @BeforeEach
     void beforeEach() {userRepository.deleteAllInBatch();}
 
@@ -36,11 +41,11 @@ class UserServiceTest {
     @Transactional
     void wrongRegister() throws Exception{
         //given
-        UserSignUpRequestDto temp = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12");
+        UserSignUpRequestDto temp = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
         userService.signUp(temp);
 
-        UserSignUpRequestDto duplicatedUser = new UserSignUpRequestDto("temp", "임시2", "temp123", "temp123");
-        UserSignUpRequestDto incorrectPasswordUser = new UserSignUpRequestDto("temp2", "임시2", "temp12", "temp123");
+        UserSignUpRequestDto duplicatedUser = new UserSignUpRequestDto("temp", "임시2", "temp123", "temp123", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto incorrectPasswordUser = new UserSignUpRequestDto("temp2", "임시2", "temp12", "temp123", LocalDate.parse("2023-11-29", formatter));
 
         Assertions.assertThrows(Exception.class, () ->
                 userService.signUp(duplicatedUser));
@@ -53,7 +58,7 @@ class UserServiceTest {
     @Transactional
     void correctRegister() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12");
+        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
         Long userId = userService.signUp(user);
 
         Optional<Users> out = userRepository.findById(userId);
@@ -68,7 +73,7 @@ class UserServiceTest {
     @Transactional
     void wrongSignIn() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12");
+        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
         userService.signUp(user);
 
         UserSignInRequestDto request1 = new UserSignInRequestDto("wrong", "temp12");
@@ -84,7 +89,7 @@ class UserServiceTest {
     @Transactional
     void correctSignIn() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12");
+        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
         userService.signUp(user);
 
         UserSignInRequestDto request = new UserSignInRequestDto("temp", "temp12");

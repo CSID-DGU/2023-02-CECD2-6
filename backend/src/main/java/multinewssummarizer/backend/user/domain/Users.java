@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -24,6 +26,9 @@ public class Users {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private LocalDate birth;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);

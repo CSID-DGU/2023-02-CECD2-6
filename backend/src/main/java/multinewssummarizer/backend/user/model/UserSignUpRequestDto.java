@@ -1,11 +1,16 @@
 package multinewssummarizer.backend.user.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import multinewssummarizer.backend.user.domain.Users;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -25,12 +30,16 @@ public class UserSignUpRequestDto {
 
     private String checkedPassword;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birth;
+
     @Builder
     public Users toEntity() {
         return Users.builder()
                 .accountId(accountId)
                 .name(name)
                 .password(password)
+                .birth(birth)
                 .build();
     }
 }
