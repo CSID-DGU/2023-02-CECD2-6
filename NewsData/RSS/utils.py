@@ -29,7 +29,7 @@ def LoadJsonFile(path):
         with open(path, 'r', encoding='utf-8') as f:
             _jsonData = json.load(f)
             return _jsonData
-    except FileNotFoundError:
+    except Exception:
         return None
     
 def getHomePath(path):

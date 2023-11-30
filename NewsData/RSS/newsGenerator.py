@@ -9,9 +9,14 @@ sys.path.append(utils.getHomePath('NewsData/RSS/RssParser'))
 _jsonData ={}
  
 def _WriteLastPostJson(d):
-    ret={}
+    ret=utils.LoadJsonFile(utils.getHomePath('NewsData/RSS/lastPost.json'))
+    if ret is None:
+        ret={}
+
     for company in d.keys():
-        ret[company]={}
+        if(ret.get(company) is None):
+            ret[company]={}
+            
         for topic in d[company]['articles'].keys():
             articles=d[company]['articles'][topic]
             dates=[article['date'] for article in articles]
@@ -19,7 +24,7 @@ def _WriteLastPostJson(d):
             
             if(len(sortedDates)!=0):
                 ret[company][topic]=sortedDates[0]
-            else:
+            elif(ret[company].get(topic) is None):
                 ret[company][topic]=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     with open(utils.getHomePath('NewsData/RSS/lastPost.json'), 'w', encoding='utf-8') as f:
