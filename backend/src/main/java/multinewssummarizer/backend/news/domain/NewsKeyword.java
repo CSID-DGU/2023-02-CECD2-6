@@ -15,8 +15,8 @@ public class NewsKeyword {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "news_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "news_id")
     News news;
 
     @Column(nullable = false)
