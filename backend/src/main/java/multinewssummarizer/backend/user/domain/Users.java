@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 
 @Entity
-@Getter
+@Getter @Setter
 @Builder
 @ToString
 @AllArgsConstructor
@@ -29,6 +29,12 @@ public class Users {
 
     @Column(nullable = false)
     private LocalDate birth;
+
+    @Column
+    private String topics;
+
+    @Column
+    private String keywords;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
