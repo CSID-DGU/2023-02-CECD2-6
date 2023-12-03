@@ -29,6 +29,7 @@ def summarize(rawData,args,device_id, cp, step):
     #print(json_list)
 
     bertData=json_to_bert(json_list,args)
+    #print(bertData)
     
     #summary_list=[]
     #for i in range(len(rawData)):
@@ -39,18 +40,16 @@ def summarize(rawData,args,device_id, cp, step):
 
     checkpoint = torch.load(cp)  # V3 - max_pos 1024
     model = ExtSummarizer(args, device, checkpoint)
-    model.eval()
+    model.eval()    
 
     opt = vars(checkpoint['opt'])
     model_flags = ['hidden_size', 'ff_size', 'heads', 'inter_layers', 'encoder', 'ff_actv', 'use_interval', 'rnn_size']
     for k in opt.keys():
         if (k in model_flags):
             setattr(args, k, opt[k])
-
     test_iter = data_loader.Dataloader(args, load_Bert(bertData),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    
     trainer = build_trainer(args, device_id, model,None)
     summarizedText=trainer.test(test_iter, step)
     #print(f'단일 요약문:{summarizedText}\n')
@@ -209,6 +208,9 @@ def textRank(summarizedText):
         for text in  ariticle:
             conbinedText.append(text)
 
+    if(len(conbinedText)<=3):
+        return conbinedText
+    
     # TF-IDF 벡터화
     tfidf = TfidfVectorizer()
     try:

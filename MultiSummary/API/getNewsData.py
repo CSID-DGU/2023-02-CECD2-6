@@ -7,8 +7,6 @@ def get_news_data(target_ids):
     with open('../config/DBConfig.yaml', 'r') as yaml_file:
         config_data = yaml.safe_load(yaml_file)
 
-    print(config_data)
-    print(config_data.get('DB_HOST', 'localhost'))
     # PostgreSQL 연결 정보
     ssh_config = {
         'SSH_HOST': config_data.get('SSH_HOST', '3.34.253.81'),
@@ -23,7 +21,6 @@ def get_news_data(target_ids):
         'password': config_data.get('DB_PASSWORD', ''),
         'port': config_data.get('DB_PORT', 5432)
     }
-    print(db_config)
     documents = []
 
     try:
@@ -50,8 +47,6 @@ def get_news_data(target_ids):
                 article_str = f'{row[5]}'
                 article_list = [item.strip() for item in article_str.strip('{}').split(',')]
                 documents.append(article_list)
-        
-        print(documents)
         
         # 연결 및 커서 닫기
         if connection:
