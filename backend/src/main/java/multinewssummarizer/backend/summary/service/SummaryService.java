@@ -1,12 +1,20 @@
 package multinewssummarizer.backend.summary.service;
 
 import lombok.RequiredArgsConstructor;
+import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.news.repository.NewsRepository;
+import multinewssummarizer.backend.summary.domain.Summarize;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
+import multinewssummarizer.backend.summary.repository.SummarizeRepository;
+import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.repository.UserRepository;
-import org.json.JSONObject;
+//import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +31,13 @@ import java.util.List;
 public class SummaryService {
 
     private final UserRepository userRepository;
+    private final SummarizeRepository summarizeRepository;
     private final NewsRepository newsRepository;
 
     private static String url = "https://dd24-116-255-71-186.ngrok-free.app/summary/";
 
     @Transactional
-    public SummaryResponseDto instantSummary(SummaryRequestDto summaryRequestDto) {
+    public SummaryResponseDto instantSummary(SummaryRequestDto summaryRequestDto) throws ParseException {
         System.out.println("summaryRequestDto = " + summaryRequestDto);
         ArrayList<String> categories = summaryRequestDto.getCategories();
         ArrayList<String> keywords = summaryRequestDto.getKeywords();
@@ -43,6 +52,9 @@ public class SummaryService {
 
         List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
         System.out.println("findNews = " + findNews);
+        if (findNews.isEmpty()) {
+            throw new CustomExceptions.NoNewsDataException("선택한 주제/키워드에 해당하는 뉴스 데이터가 존재하지 않습니다.");
+        }
         List<Long> findIds = new ArrayList<>();
         List<String> links = new ArrayList<>();
         List<String> titles = new ArrayList<>();
@@ -59,13 +71,23 @@ public class SummaryService {
         JSONObject bodies = new JSONObject();
         bodies.put("numbers", findIds);
         HttpEntity<String> entity = new HttpEntity<>(bodies.toString(), headers);
-        String responseBody = rt.postForObject(url, entity, String.class);
+        String response = rt.postForObject(url, entity, String.class);
 
-        /**TODO:
-         * 현재 요약을 한다면, {summary=['더불어민주당이 29일 전날 제출한 이동관 방송통신위원장에 대한 탄핵소추안을 철회한 뒤 다시 제출한다.', ... 민주당은 내년도 예산안 처리를 위해 30일과 다음 달 1일 본회의 일정이 확정돼 있다며 탄핵안을 처리한다는 계획이다.']}
-         * 결과로 출력이 된다. 그러나, 이를 VO나 MultiValueMap과 같이 ObjectMapping을 시도한다면, 오류가 발생한다.
-         * 아마, 개별적으로 파싱하여 값을 얻는 작업이 필요할 것 같다.
-         */
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
+        String summary =jsonObject.get("summary").toString();
+
+        String strCategories = convertToString(categories);
+        String strKeywords = convertToString(keywords);
+
+        Users findUser = userRepository.findById(summaryRequestDto.getUserId()).get();
+        Summarize summarize = Summarize.builder()
+                .users(findUser)
+                .summarize(summary)
+                .categories(strCategories)
+                .keywords(strKeywords)
+                .build();
+        summarizeRepository.save(summarize);
 
         /**
          * TODO: 만약, 오류가 발생했을 시, postForObject()로 시도한다면 에러세시지가 뜨지 않지만, exchange()로 한다면, <200 OK OK,{summary=}>로 뜬다. exception처리가 필요할수도
@@ -75,39 +97,75 @@ public class SummaryService {
                 .ids(findIds)
                 .links(links)
                 .titles(titles)
-                .summary(responseBody)
+                .summary(summary)
                 .build();
 
         return summaryResponseDto;
     }
 
-    @Transactional
-    public SummaryResponseDto testSummary(List<Long> ids) {
-        // POST 요청
-        RestTemplate rt2 = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        JSONObject body = new JSONObject();
-        body.put("numbers", ids);
+//    @Transactional
+//    public SummaryResponseDto testSummary(List<Long> ids) throws ParseException {
+//        // POST 요청
+//        RestTemplate rt2 = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        JSONObject body = new JSONObject();
+//        body.put("numbers", ids);
+//
+//        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+//
+////            ResponseEntity<?> responseBody = rt2.exchange(url, HttpMethod.POST, entity, Object.class);
+//        String responseBody = rt2.postForObject(url, entity, String.class);
+//        System.out.println("responseBody = " + responseBody);
+//
+//        JSONParser jsonParser = new JSONParser();
+//        JSONObject jsonObject = (JSONObject) jsonParser.parse(responseBody.toString());
+//        String summary = jsonObject.get("summary").toString();
+//
+//        ArrayList<String> categories = new ArrayList<>();
+//        categories.add("정치");
+//        categories.add("경제");
+//
+//        ArrayList<String> keywords = new ArrayList<>();
+//        keywords = null;
+//
+//        Long userId = 37L;
+//        String strCategories = convertToString(categories);
+//        String strKeywords = convertToString(keywords);
+//
+//        Users findUser = userRepository.findById(userId).get();
+//        Summarize summarize = Summarize.builder()
+//                .users(findUser)
+//                .summarize(summary)
+//                .categories(strCategories)
+//                .keywords(strKeywords)
+//                .build();
+//        summarizeRepository.save(summarize);
+//
+//        SummaryResponseDto summaryResponseDto = SummaryResponseDto.builder()
+//                .ids(ids)
+//                .links(null)
+//                .titles(null)
+//                .summary(summary)
+//                .build();
+//
+//
+//        return summaryResponseDto;
+//
+//    }
 
-        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
-
-        try {
-//            ResponseEntity<?> responseBody = rt2.exchange(url, HttpMethod.POST, entity, Object.class);
-            String responseBody = rt2.postForObject(url, entity, String.class);
-            System.out.println("responseBody = " + responseBody);
-
-            SummaryResponseDto summaryResponseDto = SummaryResponseDto.builder()
-                    .ids(ids)
-                    .links(null)
-                    .titles(null)
-                    .summary(responseBody.toString())
-                    .build();
-
-            return summaryResponseDto;
-
-        } catch (Exception e) {
-            throw e;
+    private String convertToString(ArrayList<String> list) {
+        if(list == null) {
+            return null;
+        }
+        else {
+            String convert = "";
+            for (String l : list) {
+                convert += l;
+                convert += ",";
+            }
+            String result = convert.substring(0, convert.length() - 1);
+            return result;
         }
     }
 

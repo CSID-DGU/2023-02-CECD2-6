@@ -39,8 +39,8 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20231013'
+	//JSON
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
 }
 
