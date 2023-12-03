@@ -19,4 +19,8 @@ public class CustomExceptions{
             super(message);
         }
     }
+
+    public static class NoNewsDataException extends RuntimeException {
+        public NoNewsDataException(String message) {super(message);}
+    }
 }

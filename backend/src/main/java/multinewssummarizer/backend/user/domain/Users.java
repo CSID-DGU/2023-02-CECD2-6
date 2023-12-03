@@ -2,9 +2,11 @@ package multinewssummarizer.backend.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import multinewssummarizer.backend.summary.domain.Summarize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -35,6 +37,9 @@ public class Users {
 
     @Column
     private String keywords;
+
+    @OneToMany(mappedBy = "summarize", cascade = CascadeType.ALL)
+    private List<Summarize> summarizes;
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
