@@ -14,10 +14,6 @@ public class NewsKeywordService {
 
     private final NewsKeywordRepository newsKeywordRepository;
 
-    public List<NewsKeyword> findAllByNewsId(Long newsId) {
-        return newsKeywordRepository.findAllByNewsId(newsId);
-    }
-
     public List<NewsKeywordDTO> findNewsKeywordsByNewsIds(List<Long> ids) {
         return newsKeywordRepository.findNewsKeywordsByNewsIds(ids);
     }

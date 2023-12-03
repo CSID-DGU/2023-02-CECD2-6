@@ -1,5 +1,6 @@
 package multinewssummarizer.backend.user.service;
 
+import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.model.UserSignInRequestDto;
 import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
@@ -41,11 +42,28 @@ class UserServiceTest {
     @Transactional
     void wrongRegister() throws Exception{
         //given
-        UserSignUpRequestDto temp = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto temp = new UserSignUpRequestDto();
+        temp.setAccountId("temp");
+        temp.setName("임시");
+        temp.setPassword("temp12");
+        temp.setCheckedPassword("temp12");
+        temp.setBirth(LocalDate.parse("2023-11-29", formatter));
+
         userService.signUp(temp);
 
-        UserSignUpRequestDto duplicatedUser = new UserSignUpRequestDto("temp", "임시2", "temp123", "temp123", LocalDate.parse("2023-11-29", formatter));
-        UserSignUpRequestDto incorrectPasswordUser = new UserSignUpRequestDto("temp2", "임시2", "temp12", "temp123", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto duplicatedUser = new UserSignUpRequestDto();
+        duplicatedUser.setAccountId("temp");
+        duplicatedUser.setName("임시2");
+        duplicatedUser.setPassword("temp123");
+        duplicatedUser.setCheckedPassword("temp123");
+        duplicatedUser.setBirth(LocalDate.parse("2023-11-29", formatter));
+
+        UserSignUpRequestDto incorrectPasswordUser = new UserSignUpRequestDto();
+        incorrectPasswordUser.setAccountId("temp2");
+        incorrectPasswordUser.setName("임시2");
+        incorrectPasswordUser.setPassword("temp12");
+        incorrectPasswordUser.setCheckedPassword("temp123");
+        incorrectPasswordUser.setBirth(LocalDate.parse("2023-11-29", formatter));
 
         Assertions.assertThrows(Exception.class, () ->
                 userService.signUp(duplicatedUser));
@@ -58,7 +76,12 @@ class UserServiceTest {
     @Transactional
     void correctRegister() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto user = new UserSignUpRequestDto();
+        user.setAccountId("temp");
+        user.setName("임시");
+        user.setPassword("temp12");
+        user.setCheckedPassword("temp12");
+        user.setBirth(LocalDate.parse("2023-11-29", formatter));
         Long userId = userService.signUp(user);
 
         Optional<Users> out = userRepository.findById(userId);
@@ -73,15 +96,20 @@ class UserServiceTest {
     @Transactional
     void wrongSignIn() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto user = new UserSignUpRequestDto();
+        user.setAccountId("temp");
+        user.setName("임시");
+        user.setPassword("temp12");
+        user.setCheckedPassword("temp12");
+        user.setBirth(LocalDate.parse("2023-11-29", formatter));
         userService.signUp(user);
 
         UserSignInRequestDto request1 = new UserSignInRequestDto("wrong", "temp12");
         UserSignInRequestDto request2 = new UserSignInRequestDto("temp", "wrong");
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(CustomExceptions.IllegalArgumentLoginException.class, () ->
                 userService.signIn(request1));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(CustomExceptions.IllegalArgumentLoginException.class, () ->
                 userService.signIn(request2));
     }
 
@@ -89,7 +117,12 @@ class UserServiceTest {
     @Transactional
     void correctSignIn() throws Exception{
         //given
-        UserSignUpRequestDto user = new UserSignUpRequestDto("temp", "임시", "temp12", "temp12", LocalDate.parse("2023-11-29", formatter));
+        UserSignUpRequestDto user = new UserSignUpRequestDto();
+        user.setAccountId("temp");
+        user.setName("임시");
+        user.setPassword("temp12");
+        user.setCheckedPassword("temp12");
+        user.setBirth(LocalDate.parse("2023-11-29", formatter));
         userService.signUp(user);
 
         UserSignInRequestDto request = new UserSignInRequestDto("temp", "temp12");

@@ -1,12 +1,8 @@
 package multinewssummarizer.backend.user.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import multinewssummarizer.backend.user.domain.Users;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +10,8 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-@AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserSignUpRequestDto {
 
     @NotBlank(message = "아이디를 입력해 주세요")
@@ -40,6 +37,8 @@ public class UserSignUpRequestDto {
                 .name(name)
                 .password(password)
                 .birth(birth)
+                .keywords(null)
+                .topics(null)
                 .build();
     }
 }

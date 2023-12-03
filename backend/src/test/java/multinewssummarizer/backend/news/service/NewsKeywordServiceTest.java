@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,21 +15,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional(readOnly = true)
 class NewsKeywordServiceTest {
 
     @Autowired
     NewsKeywordService newsKeywordService;
-
-    @Test
-    void findNewsKeywordsByOneId() {
-        Long id = 2L;
-        List<NewsKeyword> allByNewsId = newsKeywordService.findAllByNewsId(id);
-
-        System.out.println("allByNewsId = " + allByNewsId);
-
-        Assertions.assertThat(allByNewsId).isNotEmpty();
-        Assertions.assertThat(allByNewsId.size()).isEqualTo(5);
-    }
 
     @Test
     void findNewsKeywordsByMultipleIds() {

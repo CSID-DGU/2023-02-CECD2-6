@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/usersign")
 @RequiredArgsConstructor
 public class UserSignController {
 
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Long> signUp(@Valid @ModelAttribute UserSignUpRequestDto user) throws Exception {
+    public ResponseEntity<Long> signUp(@Valid @ModelAttribute UserSignUpRequestDto user) {
+        System.out.println("user = " + user);
         Long userId = userService.signUp(user);
         return ResponseEntity.ok(userId);
     }

@@ -5,10 +5,16 @@ import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.model.UserSignInRequestDto;
 import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
+import multinewssummarizer.backend.user.model.UserTopicAndKeywordRequestDto;
+import multinewssummarizer.backend.user.model.UserTopicAndKeywordResponseDto;
 import multinewssummarizer.backend.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long signUp(UserSignUpRequestDto requestDto) throws Exception{
+    public Long signUp(UserSignUpRequestDto requestDto) {
 
         if(userRepository.findByAccountId(requestDto.getAccountId()).isPresent()) {
             throw new CustomExceptions.ExistingIdException("이미 존재하는 아이디 입니다.");
@@ -43,5 +49,69 @@ public class UserService {
         }
 
         return findUser.getId();
+    }
+
+    @Transactional
+    public Long registerTopicsAndKeywords(UserTopicAndKeywordRequestDto userTopicAndKeywordRequestDto) {
+        System.out.println("userTopicAndKeywordRequestDto = " + userTopicAndKeywordRequestDto);
+        Users user = userRepository.findById(userTopicAndKeywordRequestDto.getUserId()).orElseThrow();
+
+        if (!userTopicAndKeywordRequestDto.getKeywords().isEmpty()) {
+            String keywords = "";
+            for (String keyword: userTopicAndKeywordRequestDto.getKeywords()) {
+                keywords += keyword;
+                keywords += ",";
+            }
+            keywords = keywords.substring(0, keywords.length() - 1);
+            user.setKeywords(keywords);
+        } else {
+            user.setKeywords(null);
+        }
+        if (!userTopicAndKeywordRequestDto.getTopics().isEmpty()) {
+            String topics = "";
+            for (String topic: userTopicAndKeywordRequestDto.getTopics()) {
+                topics += topic;
+                topics += ",";
+            }
+            topics = topics.substring(0, topics.length() - 1);
+            user.setTopics(topics);
+        } else {
+            user.setTopics(null);
+        }
+
+        Users savedUser = userRepository.save(user);
+        return savedUser.getId();
+    }
+
+    @Transactional
+    public UserTopicAndKeywordResponseDto getTopicsAndKeywords(Long userId) {
+        Users findUser = userRepository.findById(userId).orElseThrow();
+
+        List<String> keywords = new ArrayList<>();
+        List<String> topics = new ArrayList<>();
+
+        if(findUser.getKeywords() != null) {
+            String rawKeywords = findUser.getKeywords();
+            String[] splitKeywords = rawKeywords.split(",");
+
+            for (String splitKeyword : splitKeywords) {
+                keywords.add(splitKeyword);
+            }
+        }
+        if(findUser.getTopics() != null) {
+            String rawTopics = findUser.getTopics();
+            String[] splitTopics = rawTopics.split(",");
+
+            for (String splitTopic : splitTopics) {
+                topics.add(splitTopic);
+            }
+        }
+
+        UserTopicAndKeywordResponseDto res = UserTopicAndKeywordResponseDto.builder()
+                .topics(topics)
+                .keywords(keywords)
+                .build();
+
+        return res;
     }
 }
