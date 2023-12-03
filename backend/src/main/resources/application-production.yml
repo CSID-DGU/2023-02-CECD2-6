@@ -1,3 +1,7 @@
+server:
+  tomcat:
+    connection-timeout: 600000 #600seconds
+
 spring:
   config:
     activate:
