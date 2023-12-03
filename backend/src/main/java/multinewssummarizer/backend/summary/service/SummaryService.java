@@ -34,6 +34,13 @@ public class SummaryService {
         ArrayList<String> keywords = summaryRequestDto.getKeywords();
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
+        if (categories.isEmpty()) {
+            categories = null;
+        }
+        if (keywords.isEmpty()) {
+            keywords = null;
+        }
+
         List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
         System.out.println("findNews = " + findNews);
         List<Long> findIds = new ArrayList<>();
