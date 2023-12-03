@@ -89,4 +89,3 @@ async def createSummary(number_list: NumberList):
     except Exception as e:
         error_message = str(e)
         return {"state":"fail","msg":f"{error_message}", "summary": f""}
-    

@@ -10,7 +10,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 from sklearn.metrics import adjusted_rand_score, silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from sklearn.metrics.pairwise import cosine_similarity
 
+from itertools import combinations
 
 class Custer:
     def __init__(self, documents):
@@ -111,11 +113,14 @@ class Custer:
         vector = normalizer.fit_transform(vector)
     
         silhouette_scores = []
-        for k in range(2, max_k + 1):
-            kmeans = KMeans(n_clusters=k, random_state=42)
-            labels = kmeans.fit_predict(vector)
-            silhouette_avg = silhouette_score(vector, labels)
-            silhouette_scores.append(silhouette_avg)
+        try:
+            for k in range(2, max_k + 1):
+                kmeans = KMeans(n_clusters=k,n_init='auto', random_state=42)
+                labels = kmeans.fit_predict(vector)
+                silhouette_avg = silhouette_score(vector, labels)
+                silhouette_scores.append(silhouette_avg)
+        except: 
+            return similar_sentence_groups(article_without_newlines)
         
         # Find the optimal K based on Silhouette Score
         optimal_k = np.argmax(silhouette_scores) + 2  # +2 because the loop starts from k=2
@@ -147,11 +152,15 @@ class Custer:
         vector = normalizer.fit_transform(vector)
     
         silhouette_scores = []
-        for k in range(2, max_k + 1):
-            kmeans = KMeans(n_clusters=k, random_state=42)
-            labels = kmeans.fit_predict(vector)
-            silhouette_avg = silhouette_score(vector, labels)
-            silhouette_scores.append(silhouette_avg)
+        try:
+            for k in range(2, max_k + 1):
+                kmeans = KMeans(n_clusters=k, random_state=42)
+                labels = kmeans.fit_predict(vector)
+                silhouette_avg = silhouette_score(vector, labels)
+                silhouette_scores.append(silhouette_avg)
+        except: 
+            print(article_without_newlines)
+            print(calculate_cosine_similarity(article_without_newlines[0],article_without_newlines[1]))
         
         # Find the optimal K based on Silhouette Score
         optimal_k = np.argmax(silhouette_scores) + 2  # +2 because the loop starts from k=2
@@ -199,3 +208,37 @@ class Custer:
 
         return article_clusters
     
+def calculate_cosine_similarity(sentences1, sentences2):
+    # TfidfVectorizer를 사용하여 문장들을 TF-IDF 벡터로 변환
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([sentences1, sentences2])
+
+    # 코사인 유사도 계산
+    cosine_similarities = cosine_similarity(tfidf_matrix)[0][1]
+
+    return cosine_similarities
+
+def similar_sentence_groups(news):
+    # 그룹별로 유사한 문장들을 저장할 딕셔너리
+    similar_sentence_groups = {}
+    similar_sentence_groups[0]=[news[0]]
+
+    # 임계값 설정
+    threshold = 0.5
+
+    for sentence in news[1:]:
+        for key, group in similar_sentence_groups.items():
+            for exist_sentence in group:
+                if calculate_cosine_similarity(exist_sentence, sentence) > threshold:
+                    # 이미 있는 그룹에 추가
+                    group.append(sentence)
+                    found_group = True
+                    break
+
+        # 유사한 그룹이 없으면 새로운 그룹 생성
+        if not found_group:
+            similar_sentence_groups[len(similar_sentence_groups)] = [sentence]
+
+        found_group = False
+
+    return similar_sentence_groups
