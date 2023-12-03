@@ -39,8 +39,9 @@ def newsData():
                 # TextRank를 통한 키워드 추출 및 데이터베이스 저장
                 try:
                     keywords = TextRank(context)
+                    combinedContext = '.?.'.join(context)
                     # cur.execute("insert into news(companyname, topic, title, link, context, keywords) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, context, keywords))
-                    cur.execute("insert into news(company_name, topic, title, link, context, post_time) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, context, date))
+                    cur.execute("insert into news(company_name, topic, title, link, context, post_time) values(%s, %s, %s, %s, %s, %s);", (companyName, topic, title, link, combinedContext, date))
                     conn.commit()
                     
                     cur.execute("select id from news order by id desc limit 1;")

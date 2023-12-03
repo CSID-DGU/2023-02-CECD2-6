@@ -45,7 +45,7 @@ def get_news_data(target_ids):
             # 결과 출력
             for i, row in enumerate(rows):
                 article_str = f'{row[5]}'
-                article_list = [item.strip() for item in article_str.strip('{}').split(',')]
+                article_list = [item.strip() for item in article_str.strip('{}').split('.?.')]
                 documents.append(article_list)
         
         # 연결 및 커서 닫기
