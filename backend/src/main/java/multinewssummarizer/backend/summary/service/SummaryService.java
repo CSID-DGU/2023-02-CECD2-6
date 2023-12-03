@@ -29,6 +29,7 @@ public class SummaryService {
 
     @Transactional
     public SummaryResponseDto instantSummary(SummaryRequestDto summaryRequestDto) {
+        System.out.println("summaryRequestDto = " + summaryRequestDto);
         ArrayList<String> categories = summaryRequestDto.getCategories();
         ArrayList<String> keywords = summaryRequestDto.getKeywords();
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
