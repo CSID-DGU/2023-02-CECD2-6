@@ -35,6 +35,7 @@ public class SummaryService {
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
         List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
+        System.out.println("findNews = " + findNews);
         List<Long> findIds = new ArrayList<>();
         List<String> links = new ArrayList<>();
         List<String> titles = new ArrayList<>();
