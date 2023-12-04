@@ -26,8 +26,8 @@ class NewsRepositoryTest {
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
         categories.add("정치");
-        categories.add("경제");
-        List<SummaryRepositoryVO> output = newsRepository.findNewsByCategoriesAndKeywords(categories, null, oneDayAgo);
+        keywords.add("경찰");
+        List<SummaryRepositoryVO> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
         System.out.println("output = " + output);
     }
 }

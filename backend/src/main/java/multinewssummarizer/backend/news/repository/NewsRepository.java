@@ -17,8 +17,8 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     List<Long> findNewsByPublishedWithinLastDay();
 
     @Query(value = "SELECT DISTINCT new multinewssummarizer.backend.summary.model.SummaryRepositoryVO(n.id, n.link, n.title) FROM News n LEFT JOIN n.keywords k " +
-            "WHERE (:categoryParam IS NULL OR n.topic IN :categoryParam) " +
-            "AND (:keywordParam IS NULL OR k.keyword IN :keywordParam) " +
+            "WHERE ((:categoryParam IS NULL OR n.topic IN :categoryParam) " +
+            "OR (:keywordParam IS NULL OR k.keyword IN :keywordParam)) " +
             "AND n.postTime >= :oneDayAgo")
     List<SummaryRepositoryVO> findNewsByCategoriesAndKeywords(
             @Param("categoryParam") List<String> categoriesParam,
