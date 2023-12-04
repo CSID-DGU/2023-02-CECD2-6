@@ -3,6 +3,7 @@ package multinewssummarizer.backend.user.service;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.model.UserSignInRequestDto;
+import multinewssummarizer.backend.user.model.UserSignInResponseDto;
 import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
 import multinewssummarizer.backend.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -126,10 +127,10 @@ class UserServiceTest {
         userService.signUp(user);
 
         UserSignInRequestDto request = new UserSignInRequestDto("temp", "temp12");
-        Long userId = userService.signIn(request);
-        assertThat(userId).isNotNull();
+        UserSignInResponseDto userSignInResponseDto = userService.signIn(request);
+        assertThat(userSignInResponseDto).isNotNull();
 
-        Optional<Users> out = userRepository.findById(userId);
+        Optional<Users> out = userRepository.findById(userSignInResponseDto.getUserId());
         Users findUser = out.get();
 
         assertThat(findUser.getAccountId()).isEqualTo(request.getAccountId());
