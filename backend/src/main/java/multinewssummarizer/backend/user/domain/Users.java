@@ -38,9 +38,6 @@ public class Users {
     @Column
     private String keywords;
 
-    @OneToMany(mappedBy = "summarize", cascade = CascadeType.ALL)
-    private List<Summarize> summarizes;
-
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
     }
