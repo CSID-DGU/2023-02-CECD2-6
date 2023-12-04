@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.user.model.UserSignInRequestDto;
+import multinewssummarizer.backend.user.model.UserSignInResponseDto;
 import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
 import multinewssummarizer.backend.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -42,9 +43,9 @@ public class UserSignController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<Long> signIn(@ModelAttribute UserSignInRequestDto request) throws Exception {
-        Long userId = userService.signIn(request);
-        return ResponseEntity.ok(userId);
+    public ResponseEntity<UserSignInResponseDto> signIn(@ModelAttribute UserSignInRequestDto request) throws Exception {
+        UserSignInResponseDto userSignInResponseDto = userService.signIn(request);
+        return ResponseEntity.ok(userSignInResponseDto);
     }
 
     @ExceptionHandler(CustomExceptions.IllegalArgumentLoginException.class)

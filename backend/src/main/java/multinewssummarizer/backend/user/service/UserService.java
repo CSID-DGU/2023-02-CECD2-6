@@ -38,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long signIn(UserSignInRequestDto requestDto) throws Exception {
+    public UserSignInResponseDto signIn(UserSignInRequestDto requestDto) throws Exception {
         Users findUser = userRepository.findByAccountId(requestDto.getAccountId())
                 .orElseThrow(() -> new CustomExceptions.IllegalArgumentLoginException("아이디 또는 비밀번호가 일치하지 않습니다."));
 
@@ -46,7 +46,22 @@ public class UserService {
             throw new CustomExceptions.IllegalArgumentLoginException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
-        return findUser.getId();
+        boolean keywords = false;
+        boolean categories = false;
+
+        if(findUser.getTopics() != null) {
+            categories = true;
+        }
+        if(findUser.getKeywords() != null) {
+            keywords = true;
+        }
+
+        UserSignInResponseDto userSignInResponseDto = UserSignInResponseDto.builder()
+                .userId(findUser.getId())
+                .categories(categories)
+                .keywords(keywords)
+                .build();
+        return userSignInResponseDto;
     }
 
     @Transactional
