@@ -5,7 +5,7 @@ import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.service.SummaryService;
-import multinewssummarizer.backend.user.service.UserService;
+import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SummaryController {
 
-    private final UserService userService;
     private final SummaryService summaryService;
 
     @PostMapping("/instant")
@@ -27,14 +26,14 @@ public class SummaryController {
         return new ResponseEntity<>(news, HttpStatus.OK);
     }
 
-//    @PostMapping("/test")
-//    public ResponseEntity<SummaryResponseDto> testSummary(@RequestBody List<Long> ids) throws ParseException {
-//        SummaryResponseDto news = summaryService.testSummary(ids);
-//        return new ResponseEntity<>(news, HttpStatus.OK);
-//    }
-
     @ExceptionHandler(CustomExceptions.NoNewsDataException.class)
     public ResponseEntity<String> handleNoNewsException(CustomExceptions.NoNewsDataException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/getusersummary")
+    public ResponseEntity<List<UserSummaryResponseDto>> getSummarizeLogs(@RequestParam("id") Long userId) {
+        List<UserSummaryResponseDto> response = summaryService.getUserSummaryLogs(userId);
+        return ResponseEntity.ok(response);
     }
 }

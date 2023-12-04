@@ -9,21 +9,21 @@ import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
 import multinewssummarizer.backend.summary.repository.SummarizeRepository;
 import multinewssummarizer.backend.user.domain.Users;
+import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
 import multinewssummarizer.backend.user.repository.UserRepository;
 //import org.json.JSONObject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -103,56 +103,22 @@ public class SummaryService {
         return summaryResponseDto;
     }
 
-//    @Transactional
-//    public SummaryResponseDto testSummary(List<Long> ids) throws ParseException {
-//        // POST 요청
-//        RestTemplate rt2 = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        JSONObject body = new JSONObject();
-//        body.put("numbers", ids);
-//
-//        HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
-//
-////            ResponseEntity<?> responseBody = rt2.exchange(url, HttpMethod.POST, entity, Object.class);
-//        String responseBody = rt2.postForObject(url, entity, String.class);
-//        System.out.println("responseBody = " + responseBody);
-//
-//        JSONParser jsonParser = new JSONParser();
-//        JSONObject jsonObject = (JSONObject) jsonParser.parse(responseBody.toString());
-//        String summary = jsonObject.get("summary").toString();
-//
-//        ArrayList<String> categories = new ArrayList<>();
-//        categories.add("정치");
-//        categories.add("경제");
-//
-//        ArrayList<String> keywords = new ArrayList<>();
-//        keywords = null;
-//
-//        Long userId = 37L;
-//        String strCategories = convertToString(categories);
-//        String strKeywords = convertToString(keywords);
-//
-//        Users findUser = userRepository.findById(userId).get();
-//        Summarize summarize = Summarize.builder()
-//                .users(findUser)
-//                .summarize(summary)
-//                .categories(strCategories)
-//                .keywords(strKeywords)
-//                .build();
-//        summarizeRepository.save(summarize);
-//
-//        SummaryResponseDto summaryResponseDto = SummaryResponseDto.builder()
-//                .ids(ids)
-//                .links(null)
-//                .titles(null)
-//                .summary(summary)
-//                .build();
-//
-//
-//        return summaryResponseDto;
-//
-//    }
+    @Transactional
+    public List<UserSummaryResponseDto> getUserSummaryLogs(Long id) {
+        Users findUser = userRepository.findById(id).get();
+        List<Summarize> findSummarizes = summarizeRepository.findByUsers(findUser);
+
+        List<UserSummaryResponseDto> response = new ArrayList<>();
+        for (Summarize summarize : findSummarizes) {
+            response.add(UserSummaryResponseDto.builder()
+                    .summary(summarize.getSummarize())
+                    .categories(summarize.getCategories())
+                    .keywords(summarize.getKeywords())
+                    .build());
+        }
+
+        return response;
+    }
 
     private String convertToString(ArrayList<String> list) {
         if(list == null) {

@@ -2,11 +2,9 @@ package multinewssummarizer.backend.user.service;
 
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
+import multinewssummarizer.backend.summary.domain.Summarize;
 import multinewssummarizer.backend.user.domain.Users;
-import multinewssummarizer.backend.user.model.UserSignInRequestDto;
-import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
-import multinewssummarizer.backend.user.model.UserTopicAndKeywordRequestDto;
-import multinewssummarizer.backend.user.model.UserTopicAndKeywordResponseDto;
+import multinewssummarizer.backend.user.model.*;
 import multinewssummarizer.backend.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -114,4 +112,6 @@ public class UserService {
 
         return res;
     }
+
+
 }
