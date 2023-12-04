@@ -36,4 +36,10 @@ public class SummaryController {
         List<UserSummaryResponseDto> response = summaryService.getUserSummaryLogs(userId);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/rsscomplete")
+    public ResponseEntity<Boolean> batchSummary() throws ParseException {
+        boolean response = summaryService.batchSummary();
+        return ResponseEntity.ok(response);
+    }
 }

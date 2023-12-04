@@ -21,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -101,6 +99,73 @@ public class SummaryService {
                 .build();
 
         return summaryResponseDto;
+    }
+
+    @Transactional
+    public boolean batchSummary() throws ParseException{
+        // 1. 모든 유저에 대해서
+        List<Users> userlist = userRepository.findAll();
+        System.out.println("userlist = " + userlist);
+
+        // 2. 유저가 설정한 주제와 키워드들을 불러오고
+        for(Users u : userlist){
+            String userTopics = u.getTopics();
+            String userKeywords = u.getKeywords();
+            ArrayList<String> categories = null;
+            ArrayList<String> keywords = null;
+            // 2-1. 주제와 키워드들을 추가
+            if(userTopics!=null){
+                categories = new ArrayList<>();
+                Collections.addAll(categories,userTopics.split(","));
+            }
+            if(userKeywords!=null){
+                keywords = new ArrayList<>();
+                Collections.addAll(keywords,userKeywords.split(","));
+            }
+            if(categories==null && keywords==null){
+                continue;
+            }
+
+            // TMP
+            System.out.println("categories = " + categories);
+            System.out.println("keywords = " + keywords);
+
+            LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+            List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
+            System.out.println("findNews = " + findNews);
+            // 부합하는 뉴스가 없으면 스킵
+            if (findNews.isEmpty()) {
+                continue;
+            }
+            List<Long> findIds = new ArrayList<>();
+            for (SummaryRepositoryVO summaryRepositoryVO : findNews) {
+                findIds.add(summaryRepositoryVO.getId());
+            }
+
+            // 4. 키워드 전체에 대한 요약문을 만들고
+            // POST 요청
+            RestTemplate rt = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            JSONObject bodies = new JSONObject();
+            bodies.put("numbers", findIds);
+            HttpEntity<String> entity = new HttpEntity<>(bodies.toString(), headers);
+            String response = rt.postForObject(url, entity, String.class);
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
+            String summary=jsonObject.get("summary").toString();
+
+            // 5. DB의 Summary 테이블에 저장한다
+            Summarize summarize = Summarize.builder()
+                    .users(u)
+                    .summarize(summary)
+                    .categories(userTopics)
+                    .keywords(userKeywords)
+                    .build();
+            summarizeRepository.save(summarize);
+        }
+        return true;
     }
 
     @Transactional
