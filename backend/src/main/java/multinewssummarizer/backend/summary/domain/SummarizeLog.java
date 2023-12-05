@@ -7,6 +7,7 @@ import multinewssummarizer.backend.user.domain.Users;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "SummarizeLog")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
