@@ -2,16 +2,14 @@ package multinewssummarizer.backend.summary.service;
 
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
+import multinewssummarizer.backend.news.domain.News;
 import multinewssummarizer.backend.news.repository.NewsRepository;
 import multinewssummarizer.backend.summary.domain.Batchresult;
 import multinewssummarizer.backend.summary.domain.Summarizelog;
-import multinewssummarizer.backend.summary.model.SummaryRequestDto;
-import multinewssummarizer.backend.summary.model.SummaryResponseDto;
-import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
+import multinewssummarizer.backend.summary.model.*;
 import multinewssummarizer.backend.summary.repository.BatchresultRepository;
 import multinewssummarizer.backend.summary.repository.SummarizelogRepository;
 import multinewssummarizer.backend.user.domain.Users;
-import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
 import multinewssummarizer.backend.user.repository.UserRepository;
 //import org.json.JSONObject;
 import org.json.simple.JSONObject;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -182,6 +181,62 @@ public class SummaryService {
             batchResultRepository.save(batchResult);
         }
         return true;
+    }
+
+    @Transactional
+    public BatchSummaryResponseDto getLastBatchSummary(Long id) {
+        Users findUser = userRepository.findById(id).get();
+        Optional<Batchresult> result = batchResultRepository.findLastSummaryByUserId(findUser);
+
+        if(result.isEmpty()) {
+            throw new CustomExceptions.NoBatchNewsDataException("요약된 뉴스 데이터가 존재하지 않습니다.");
+        }
+
+        Batchresult batchResult = result.get();
+
+        String strRawNewsIds = batchResult.getNewsIds();
+        String[] strNewsIds = strRawNewsIds.split(",");
+
+        List<Long> newsIds = new ArrayList<>();
+
+        for (String strNewsId: strNewsIds) {
+            newsIds.add(Long.parseLong(strNewsId));
+        }
+
+        List<News> newses = newsRepository.findAllById(newsIds);
+
+        List<BatchSummaryNewsVO> batchSummaryNewsVO = new ArrayList<>();
+
+        for (News news: newses) {
+            batchSummaryNewsVO.add(BatchSummaryNewsVO.builder()
+                    .title(news.getTitle())
+                    .context(news.getContext())
+                    .companyName(news.getCompanyName())
+                    .link(news.getLink())
+                    .build());
+        }
+
+        // Summarylog에 해당 데이터가 이미 저장되어있는지 확인. 없다면 SummarizeLog에 추가
+        if(summarizeLogRepository.findByBatchnewsId(batchResult.getId()).isEmpty()) {
+            Summarizelog summarizelog = Summarizelog.builder()
+                    .users(findUser)
+                    .summarize(batchResult.getSummarize())
+                    .categories(batchResult.getCategories())
+                    .keywords(batchResult.getKeywords())
+                    .newsIds(batchResult.getNewsIds())
+                    .createdTime(batchResult.getCreatedTime())
+                    .batchNewsId(batchResult.getId())
+                    .build();
+
+            summarizeLogRepository.save(summarizelog);
+        }
+
+        BatchSummaryResponseDto batchSummaryResponseDto = BatchSummaryResponseDto.builder()
+                .summary(batchResult.getSummarize())
+                .news(batchSummaryNewsVO)
+                .build();
+
+        return batchSummaryResponseDto;
     }
 
     @Transactional

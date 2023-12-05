@@ -2,6 +2,7 @@ package multinewssummarizer.backend.summary.controller;
 
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
+import multinewssummarizer.backend.summary.model.BatchSummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.service.SummaryService;
@@ -41,5 +42,16 @@ public class SummaryController {
     public ResponseEntity<Boolean> batchSummary() throws ParseException {
         boolean response = summaryService.batchSummary();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/getlastbatchsummary")
+    public ResponseEntity<BatchSummaryResponseDto> getLastBatchSummary(@RequestParam("id") Long userId) {
+        BatchSummaryResponseDto lastBatchSummary = summaryService.getLastBatchSummary(userId);
+        return ResponseEntity.ok(lastBatchSummary);
+    }
+
+    @ExceptionHandler(CustomExceptions.NoBatchNewsDataException.class)
+    public ResponseEntity<String> handleNoBatchNewsDataException(CustomExceptions.NoBatchNewsDataException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
