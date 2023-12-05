@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BatchResult {
+public class Batchresult {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
