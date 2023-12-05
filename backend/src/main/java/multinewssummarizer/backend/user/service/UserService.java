@@ -2,7 +2,6 @@ package multinewssummarizer.backend.user.service;
 
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
-import multinewssummarizer.backend.summary.domain.Summarize;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.model.*;
 import multinewssummarizer.backend.user.repository.UserRepository;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)

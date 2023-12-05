@@ -3,10 +3,12 @@ package multinewssummarizer.backend.summary.service;
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.news.repository.NewsRepository;
-import multinewssummarizer.backend.summary.domain.Summarize;
+import multinewssummarizer.backend.summary.domain.BatchResult;
+import multinewssummarizer.backend.summary.domain.SummarizeLog;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
+import multinewssummarizer.backend.summary.repository.BatchResultRepository;
 import multinewssummarizer.backend.summary.repository.SummarizeRepository;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
@@ -31,6 +33,7 @@ public class SummaryService {
     private final UserRepository userRepository;
     private final SummarizeRepository summarizeRepository;
     private final NewsRepository newsRepository;
+    private final BatchResultRepository batchResultRepository;
 
     private static String url = "https://dd24-116-255-71-186.ngrok-free.app/summary/";
 
@@ -56,10 +59,12 @@ public class SummaryService {
         List<Long> findIds = new ArrayList<>();
         List<String> links = new ArrayList<>();
         List<String> titles = new ArrayList<>();
+        List<String> contexts = new ArrayList<>();
         for (SummaryRepositoryVO summaryRepositoryVO : findNews) {
             findIds.add(summaryRepositoryVO.getId());
             links.add(summaryRepositoryVO.getLink());
             titles.add(summaryRepositoryVO.getTitle());
+            contexts.add(summaryRepositoryVO.getContext());
         }
 
         // POST 요청
@@ -75,17 +80,21 @@ public class SummaryService {
         JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
         String summary =jsonObject.get("summary").toString();
 
+        String strNewsIds = convertToString((ArrayList<Long>) findIds);
         String strCategories = convertToString(categories);
         String strKeywords = convertToString(keywords);
 
         Users findUser = userRepository.findById(summaryRequestDto.getUserId()).get();
-        Summarize summarize = Summarize.builder()
+        SummarizeLog summarizeLog = SummarizeLog.builder()
                 .users(findUser)
                 .summarize(summary)
                 .categories(strCategories)
                 .keywords(strKeywords)
+                .newsIds(strNewsIds)
+                .createdTime(LocalDateTime.now())
+                .batchNewsId(null)
                 .build();
-        summarizeRepository.save(summarize);
+        summarizeRepository.save(summarizeLog);
 
         /**
          * TODO: 만약, 오류가 발생했을 시, postForObject()로 시도한다면 에러세시지가 뜨지 않지만, exchange()로 한다면, <200 OK OK,{summary=}>로 뜬다. exception처리가 필요할수도
@@ -95,6 +104,7 @@ public class SummaryService {
                 .ids(findIds)
                 .links(links)
                 .titles(titles)
+                .contexts(contexts)
                 .summary(summary)
                 .build();
 
@@ -138,8 +148,10 @@ public class SummaryService {
                 continue;
             }
             List<Long> findIds = new ArrayList<>();
+            List<String> contexts = new ArrayList<>();
             for (SummaryRepositoryVO summaryRepositoryVO : findNews) {
                 findIds.add(summaryRepositoryVO.getId());
+                contexts.add(summaryRepositoryVO.getContext());
             }
 
             // 4. 키워드 전체에 대한 요약문을 만들고
@@ -156,14 +168,18 @@ public class SummaryService {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(response);
             String summary=jsonObject.get("summary").toString();
 
-            // 5. DB의 Summary 테이블에 저장한다
-            Summarize summarize = Summarize.builder()
+            String strNewsIds = convertToString((ArrayList<Long>) findIds);
+
+            // 5. DB의 BatchResult 테이블에 저장한다
+            BatchResult batchResult = BatchResult.builder()
                     .users(u)
                     .summarize(summary)
                     .categories(userTopics)
                     .keywords(userKeywords)
+                    .newsIds(strNewsIds)
+                    .createdTime(LocalDateTime.now())
                     .build();
-            summarizeRepository.save(summarize);
+            batchResultRepository.save(batchResult);
         }
         return true;
     }
@@ -171,32 +187,33 @@ public class SummaryService {
     @Transactional
     public List<UserSummaryResponseDto> getUserSummaryLogs(Long id) {
         Users findUser = userRepository.findById(id).get();
-        List<Summarize> findSummarizes = summarizeRepository.findByUsers(findUser);
+        List<SummarizeLog> findSummarizeLogs = summarizeRepository.findByUsers(findUser);
 
         List<UserSummaryResponseDto> response = new ArrayList<>();
-        for (Summarize summarize : findSummarizes) {
+        for (SummarizeLog summarizeLog : findSummarizeLogs) {
             response.add(UserSummaryResponseDto.builder()
-                    .summary(summarize.getSummarize())
-                    .categories(summarize.getCategories())
-                    .keywords(summarize.getKeywords())
+                    .summary(summarizeLog.getSummarize())
+                    .categories(summarizeLog.getCategories())
+                    .keywords(summarizeLog.getKeywords())
                     .build());
         }
 
         return response;
     }
 
-    private String convertToString(ArrayList<String> list) {
+    private <T> String convertToString(ArrayList<T> list) {
         if(list == null) {
             return null;
         }
         else {
-            String convert = "";
-            for (String l : list) {
-                convert += l;
-                convert += ",";
+            StringBuilder convert = new StringBuilder();
+            for (T element : list) {
+                convert.append(element).append(",");
             }
-            String result = convert.substring(0, convert.length() - 1);
-            return result;
+            if (convert.length() > 0) {
+                convert.deleteCharAt(convert.length() - 1); // 마지막 콤마 제거
+            }
+            return convert.toString();
         }
     }
 

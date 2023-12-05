@@ -4,10 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import multinewssummarizer.backend.user.domain.Users;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
-@NoArgsConstructor
-public class Summarize {
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class SummarizeLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,11 +29,13 @@ public class Summarize {
     @Column
     private String keywords;
 
-    @Builder
-    public Summarize (Users users, String summarize, String categories, String keywords) {
-        this.users = users;
-        this.summarize = summarize;
-        this.categories = categories;
-        this.keywords = keywords;
-    }
+    @Column(nullable = false)
+    private String newsIds;
+
+    @Column(nullable = false)
+    private LocalDateTime createdTime;
+
+    @Column(name = "batchnews_id")
+    private Long batchNewsId;
+
 }

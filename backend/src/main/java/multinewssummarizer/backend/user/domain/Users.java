@@ -2,11 +2,9 @@ package multinewssummarizer.backend.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import multinewssummarizer.backend.summary.domain.Summarize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter @Setter
