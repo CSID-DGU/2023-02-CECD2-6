@@ -52,4 +52,10 @@ public class UserSignController {
     public ResponseEntity<String> handleIllegalArgumentLoginException(CustomExceptions.IllegalArgumentLoginException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/modify")
+    public ResponseEntity<Long> modifyUserInfo(@Valid @ModelAttribute UserSignUpRequestDto userSignUpRequestDto) {
+        Long userId = userService.modify(userSignUpRequestDto);
+        return ResponseEntity.ok(userId);
+    }
 }
