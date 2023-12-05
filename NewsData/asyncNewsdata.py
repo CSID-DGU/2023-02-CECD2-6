@@ -70,8 +70,7 @@ async def main():
     except Exception as e:
         print('newsData - failed')
 
-    # TODO: 여기 API완성 후 변경해주세요
-    task = asyncio.create_task(sendAsyncRequest("http://example.com"))
+    task = asyncio.create_task(sendAsyncRequest("http://GDSLoadBalancer-590554331.ap-northeast-2.elb.amazonaws.com/summary/rsscomplete"))
     await asyncio.sleep(5)
 
 asyncio.run(main())
