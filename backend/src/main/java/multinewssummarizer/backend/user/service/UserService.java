@@ -38,6 +38,24 @@ public class UserService {
     }
 
     @Transactional
+    public Long modify(UserSignUpRequestDto userSignUpRequestDto) {
+        Users findUser = userRepository.findByAccountId(userSignUpRequestDto.getAccountId()).orElseThrow();
+
+        if(!userSignUpRequestDto.getPassword().equals(userSignUpRequestDto.getCheckedPassword())) {
+            throw new CustomExceptions.WrongPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        findUser.setPassword(userSignUpRequestDto.getPassword());
+        findUser.setName(userSignUpRequestDto.getName());
+        findUser.setBirth(userSignUpRequestDto.getBirth());
+
+        Users savedUser = userRepository.save(findUser);
+        savedUser.encodePassword(passwordEncoder);
+
+        return savedUser.getId();
+    }
+
+    @Transactional
     public UserSignInResponseDto signIn(UserSignInRequestDto requestDto) throws Exception {
         Users findUser = userRepository.findByAccountId(requestDto.getAccountId())
                 .orElseThrow(() -> new CustomExceptions.IllegalArgumentLoginException("아이디 또는 비밀번호가 일치하지 않습니다."));
@@ -128,5 +146,15 @@ public class UserService {
         return res;
     }
 
+    public UserInfoResponseDto getUserInfo(Long userId) {
+        Users findUser = userRepository.findById(userId).orElseThrow();
+        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
+                .userId(findUser.getAccountId())
+                .name(findUser.getName())
+                .birth(findUser.getBirth())
+                .build();
+
+        return userInfoResponseDto;
+    }
 
 }
