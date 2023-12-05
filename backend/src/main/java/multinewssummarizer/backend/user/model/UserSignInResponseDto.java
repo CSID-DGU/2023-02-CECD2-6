@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class UserSignInResponseDto {
     private Long userId;
+    private String name;
     private Boolean keywords;
     private Boolean categories;
 }
