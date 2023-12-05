@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 public class BatchSummaryResponseDto {
     private String summary;
-    private List<BatchSummaryNewsVO> news;
+    private List<SummaryNewsVO> news;
 }

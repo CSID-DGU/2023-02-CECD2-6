@@ -2,11 +2,8 @@ package multinewssummarizer.backend.summary.controller;
 
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
-import multinewssummarizer.backend.summary.model.BatchSummaryResponseDto;
-import multinewssummarizer.backend.summary.model.SummaryRequestDto;
-import multinewssummarizer.backend.summary.model.SummaryResponseDto;
+import multinewssummarizer.backend.summary.model.*;
 import multinewssummarizer.backend.summary.service.SummaryService;
-import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +30,14 @@ public class SummaryController {
     }
 
     @GetMapping("/getusersummary")
-    public ResponseEntity<List<UserSummaryResponseDto>> getSummarizeLogs(@RequestParam("id") Long userId) {
-        List<UserSummaryResponseDto> response = summaryService.getUserSummaryLogs(userId);
+    public ResponseEntity<List<SummaryLogsResponseDto>> getSummarizeLogs(@RequestParam("id") Long userId) {
+        List<SummaryLogsResponseDto> response = summaryService.getUserSummaryLogs(userId);
         return ResponseEntity.ok(response);
+    }
+
+    @ExceptionHandler(CustomExceptions.NoSummaryLogException.class)
+    public ResponseEntity<String> handleNoSummaryLogsException(CustomExceptions.NoSummaryLogException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/rsscomplete")
