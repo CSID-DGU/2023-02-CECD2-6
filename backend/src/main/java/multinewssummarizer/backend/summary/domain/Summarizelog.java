@@ -7,12 +7,12 @@ import multinewssummarizer.backend.user.domain.Users;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "SummarizeLog")
+@Table
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class SummarizeLog {
+public class Summarizelog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

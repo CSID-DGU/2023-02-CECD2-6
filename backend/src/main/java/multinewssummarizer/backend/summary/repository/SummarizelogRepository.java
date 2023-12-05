@@ -1,13 +1,13 @@
 package multinewssummarizer.backend.summary.repository;
 
-import multinewssummarizer.backend.summary.domain.SummarizeLog;
+import multinewssummarizer.backend.summary.domain.Summarizelog;
 import multinewssummarizer.backend.user.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SummarizeRepository extends JpaRepository<SummarizeLog, Long> {
+public interface SummarizelogRepository extends JpaRepository<Summarizelog, Long> {
 
-    List<SummarizeLog> findByUsers(Users findUser);
+    List<Summarizelog> findByUsers(Users findUser);
 
 }

@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @Getter @Setter
 @Builder
 @ToString
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Users {
 
     @Id
