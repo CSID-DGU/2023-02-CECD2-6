@@ -10,7 +10,7 @@ CREATE TABLE SummarizeLog (
     keywords varchar,
     news_ids varchar NOT NULL,
     created_time TIMESTAMP NOT NULL,
-    batchnews_id int;
+    batchnews_id int
 );
 
 ALTER TABLE SummarizeLog ADD FOREIGN KEY (user_id) REFERENCES Users (id);
