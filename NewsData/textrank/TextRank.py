@@ -50,7 +50,7 @@ komoran = Komoran()
 def komoran_tokenize(sent):
     words = sent.split()
     words = komoran.pos(sent, join=True)
-    words = [w for w in words if (('/NN' in w and '/NNB' not in w) or '/XR' in w or '/VA' in w or '/VV' in w)]
+    words = [w for w in words if (('/NN' in w and '/NNB' not in w) or '/XR' in w)]
     # print(words)
     return words
 
@@ -58,7 +58,7 @@ kkma = Kkma()
 def kkma_tokenize(sent):
     words = sent.split()
     words = kkma.pos(sent, join=True)
-    words = [w for w in words if (('/NN' in w and '/NNB' not in w) or '/XR' in w or '/VA' in w or '/VV' in w)]
+    words = [w for w in words if (('/NN' in w and '/NNB' not in w) or '/XR' in w)]
     return words
 
 def TextRank(text: list, topk: int=5):

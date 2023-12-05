@@ -1,0 +1,5 @@
+host: 172.30.246.216
+database: postgres
+user: postgres
+password: 11223344
+port: 5432

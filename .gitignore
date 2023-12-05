@@ -1,2 +1,12 @@
-*/RSS/**/__pycache__
-*/RSS/output.json
+__pycache__/
+NewsData/**/output.json
+NewsData/**/lastPost.json
+NewsData/**/DBConfig.env
+ShellLogs/runNewsdata.log
+
+#git ignore for MultiSummary
+MultiSummary/**/*.log
+MultiSummary/**/*.pt  
+MultiSummary/models
+
+MultiSummary/API/gds2023/gds2023.pem
