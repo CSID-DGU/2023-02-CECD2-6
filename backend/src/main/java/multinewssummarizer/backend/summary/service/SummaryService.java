@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.news.repository.NewsRepository;
 import multinewssummarizer.backend.summary.domain.BatchResult;
-import multinewssummarizer.backend.summary.domain.SummarizeLog;
+import multinewssummarizer.backend.summary.domain.Summarizelog;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
 import multinewssummarizer.backend.summary.repository.BatchResultRepository;
-import multinewssummarizer.backend.summary.repository.SummarizeRepository;
+import multinewssummarizer.backend.summary.repository.SummarizelogRepository;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
 import multinewssummarizer.backend.user.repository.UserRepository;
@@ -31,7 +31,7 @@ import java.util.*;
 public class SummaryService {
 
     private final UserRepository userRepository;
-    private final SummarizeRepository summarizeRepository;
+    private final SummarizelogRepository summarizeLogRepository;
     private final NewsRepository newsRepository;
     private final BatchResultRepository batchResultRepository;
 
@@ -85,7 +85,7 @@ public class SummaryService {
         String strKeywords = convertToString(keywords);
 
         Users findUser = userRepository.findById(summaryRequestDto.getUserId()).get();
-        SummarizeLog summarizeLog = SummarizeLog.builder()
+        Summarizelog summarizeLog = Summarizelog.builder()
                 .users(findUser)
                 .summarize(summary)
                 .categories(strCategories)
@@ -94,7 +94,7 @@ public class SummaryService {
                 .createdTime(LocalDateTime.now())
                 .batchNewsId(null)
                 .build();
-        summarizeRepository.save(summarizeLog);
+        summarizeLogRepository.save(summarizeLog);
 
         /**
          * TODO: 만약, 오류가 발생했을 시, postForObject()로 시도한다면 에러세시지가 뜨지 않지만, exchange()로 한다면, <200 OK OK,{summary=}>로 뜬다. exception처리가 필요할수도
@@ -187,10 +187,10 @@ public class SummaryService {
     @Transactional
     public List<UserSummaryResponseDto> getUserSummaryLogs(Long id) {
         Users findUser = userRepository.findById(id).get();
-        List<SummarizeLog> findSummarizeLogs = summarizeRepository.findByUsers(findUser);
+        List<Summarizelog> findSummarizeLogs = summarizeLogRepository.findByUsers(findUser);
 
         List<UserSummaryResponseDto> response = new ArrayList<>();
-        for (SummarizeLog summarizeLog : findSummarizeLogs) {
+        for (Summarizelog summarizeLog : findSummarizeLogs) {
             response.add(UserSummaryResponseDto.builder()
                     .summary(summarizeLog.getSummarize())
                     .categories(summarizeLog.getCategories())
