@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class BatchSummaryNewsVO {
+public class SummaryNewsVO {
     private String title;
     private String context;
     private String companyName;

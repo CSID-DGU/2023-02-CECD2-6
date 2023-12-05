@@ -27,4 +27,8 @@ public class CustomExceptions{
     public static class NoBatchNewsDataException extends RuntimeException {
         public NoBatchNewsDataException(String message) {super(message);}
     }
+
+    public static class NoSummaryLogException extends RuntimeException {
+        public NoSummaryLogException(String message) {super(message);}
+    }
 }

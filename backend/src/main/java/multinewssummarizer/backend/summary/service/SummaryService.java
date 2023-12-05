@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -205,10 +204,10 @@ public class SummaryService {
 
         List<News> newses = newsRepository.findAllById(newsIds);
 
-        List<BatchSummaryNewsVO> batchSummaryNewsVO = new ArrayList<>();
+        List<SummaryNewsVO> summaryNewsVO = new ArrayList<>();
 
         for (News news: newses) {
-            batchSummaryNewsVO.add(BatchSummaryNewsVO.builder()
+            summaryNewsVO.add(SummaryNewsVO.builder()
                     .title(news.getTitle())
                     .context(news.getContext())
                     .companyName(news.getCompanyName())
@@ -233,25 +232,47 @@ public class SummaryService {
 
         BatchSummaryResponseDto batchSummaryResponseDto = BatchSummaryResponseDto.builder()
                 .summary(batchResult.getSummarize())
-                .news(batchSummaryNewsVO)
+                .news(summaryNewsVO)
                 .build();
 
         return batchSummaryResponseDto;
     }
 
     @Transactional
-    public List<UserSummaryResponseDto> getUserSummaryLogs(Long id) {
+    public List<SummaryLogsResponseDto> getUserSummaryLogs(Long id) {
         Users findUser = userRepository.findById(id).get();
         List<Summarizelog> findSummarizeLogs = summarizeLogRepository.findByUsers(findUser);
 
-        List<UserSummaryResponseDto> response = new ArrayList<>();
-        for (Summarizelog summarizeLog : findSummarizeLogs) {
-            response.add(UserSummaryResponseDto.builder()
-                    .summary(summarizeLog.getSummarize())
-                    .categories(summarizeLog.getCategories())
-                    .keywords(summarizeLog.getKeywords())
+        if (findSummarizeLogs.isEmpty()) {
+            throw new CustomExceptions.NoSummaryLogException("요약 결과가 존재하지 않습니다.");
+        }
+
+        List<SummaryLogsResponseDto> response = new ArrayList<>();
+        for (Summarizelog findSummarizeLog : findSummarizeLogs) {
+            String strRawNewsIds = findSummarizeLog.getNewsIds();
+            String[] strNewsIds = strRawNewsIds.split(",");
+
+            List<SummaryNewsVO> summaryNewsVOList = new ArrayList<>();
+            for (String strNewsId : strNewsIds) {
+                News news = newsRepository.findById(Long.parseLong(strNewsId)).get();
+
+                summaryNewsVOList.add(SummaryNewsVO.builder()
+                        .title(news.getTitle())
+                        .context(news.getContext())
+                        .companyName(news.getCompanyName())
+                        .link(news.getLink())
+                        .build());
+            }
+
+            response.add(SummaryLogsResponseDto.builder()
+                    .summary(findSummarizeLog.getSummarize())
+                    .categories(findSummarizeLog.getCategories())
+                    .keywords(findSummarizeLog.getKeywords())
+                    .createdTime(findSummarizeLog.getCreatedTime())
+                    .news(summaryNewsVOList)
                     .build());
         }
+
 
         return response;
     }
