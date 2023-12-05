@@ -9,6 +9,8 @@ import multinewssummarizer.backend.user.model.UserSignUpRequestDto;
 import multinewssummarizer.backend.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,8 @@ public class UserSignController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        String defaultMessage = ex.getBindingResult().getFieldError().getDefaultMessage();
+        return new ResponseEntity<>(defaultMessage, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/sign-in")
