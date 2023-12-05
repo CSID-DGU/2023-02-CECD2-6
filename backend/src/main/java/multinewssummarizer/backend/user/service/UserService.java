@@ -74,6 +74,7 @@ public class UserService {
 
         UserSignInResponseDto userSignInResponseDto = UserSignInResponseDto.builder()
                 .userId(findUser.getId())
+                .name(findUser.getName())
                 .categories(categories)
                 .keywords(keywords)
                 .build();
