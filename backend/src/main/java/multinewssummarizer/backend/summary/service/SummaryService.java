@@ -3,12 +3,12 @@ package multinewssummarizer.backend.summary.service;
 import lombok.RequiredArgsConstructor;
 import multinewssummarizer.backend.global.exceptionhandler.CustomExceptions;
 import multinewssummarizer.backend.news.repository.NewsRepository;
-import multinewssummarizer.backend.summary.domain.BatchResult;
+import multinewssummarizer.backend.summary.domain.Batchresult;
 import multinewssummarizer.backend.summary.domain.Summarizelog;
 import multinewssummarizer.backend.summary.model.SummaryRequestDto;
 import multinewssummarizer.backend.summary.model.SummaryResponseDto;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
-import multinewssummarizer.backend.summary.repository.BatchResultRepository;
+import multinewssummarizer.backend.summary.repository.BatchresultRepository;
 import multinewssummarizer.backend.summary.repository.SummarizelogRepository;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.summary.model.UserSummaryResponseDto;
@@ -33,7 +33,7 @@ public class SummaryService {
     private final UserRepository userRepository;
     private final SummarizelogRepository summarizeLogRepository;
     private final NewsRepository newsRepository;
-    private final BatchResultRepository batchResultRepository;
+    private final BatchresultRepository batchResultRepository;
 
     private static String url = "https://dd24-116-255-71-186.ngrok-free.app/summary/";
 
@@ -171,7 +171,7 @@ public class SummaryService {
             String strNewsIds = convertToString((ArrayList<Long>) findIds);
 
             // 5. DB의 BatchResult 테이블에 저장한다
-            BatchResult batchResult = BatchResult.builder()
+            Batchresult batchResult = Batchresult.builder()
                     .users(u)
                     .summarize(summary)
                     .categories(userTopics)
