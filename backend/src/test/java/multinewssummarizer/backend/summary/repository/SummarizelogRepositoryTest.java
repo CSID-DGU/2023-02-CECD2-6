@@ -3,6 +3,7 @@ package multinewssummarizer.backend.summary.repository;
 import multinewssummarizer.backend.summary.domain.Summarizelog;
 import multinewssummarizer.backend.user.domain.Users;
 import multinewssummarizer.backend.user.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -22,13 +24,14 @@ class SummarizelogRepositoryTest {
 
     @Autowired
     SummarizelogRepository summarizelogRepository;
-
     @Autowired
     UserRepository userRepository;
 
     @BeforeEach
     void beforeEach() {
         summarizelogRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+
     }
 
     @Test
@@ -51,5 +54,10 @@ class SummarizelogRepositoryTest {
                 .batchNewsId(null)
                 .build();
         Summarizelog savedSummarizeLog = summarizelogRepository.save(summarizelog);
+        Optional<Summarizelog> byBatchnewsId = summarizelogRepository.findByBatchnewsId(15L);
+
+        Assertions.assertThat(byBatchnewsId).isEmpty();
     }
+
+
 }
