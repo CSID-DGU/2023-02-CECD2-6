@@ -1,7 +1,6 @@
 package multinewssummarizer.backend.news.repository;
 
 import multinewssummarizer.backend.news.domain.News;
-import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
