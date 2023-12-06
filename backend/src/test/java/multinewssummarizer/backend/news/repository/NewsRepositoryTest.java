@@ -30,8 +30,8 @@ class NewsRepositoryTest {
         System.out.println("oneDay = " + oneDay);
 
         categories.add("정치");
-        keywords.add("밥");
-        List<News> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDay);
+//        keywords.add("밥");
+        List<News> output = newsRepository.findNewsByCategoriesAndKeywords(categories, null, oneDay);
         System.out.println("output = " + output);
     }
 }
