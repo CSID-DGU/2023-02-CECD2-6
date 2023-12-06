@@ -1,0 +1,185 @@
+.mainDiv {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+}
+
+.tabHeader {
+    display: flex;
+    margin: 0 30px;
+}
+
+.tabHeader div {
+    font-weight: bold;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    background-color: white;
+}
+
+.tabContent {
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin: 0 30px;
+}
+
+.mainView {
+    background-color: white;
+}
+
+.title {
+    margin-left: 30px;
+}
+
+.outerView {
+    margin: 40px 30px;
+    padding: 10px 0;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.innerView {
+    height: 330px;
+    margin: 30px;
+    padding: 50px;
+    border-radius: 10px;
+    background-color: #EDE8E8;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.btnDiv {
+    justify-content: center;
+    text-align: center;
+}
+
+.inputwithbtn {
+    display: flex;
+    align-items: center;
+    height: 1.2rem;
+    margin: 32px 0;
+}
+
+h2 {
+    margin-left: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.idcheckBtn {
+    margin-left: 20px;
+    font-size: 0.8rem;
+    font-weight: 1000;
+    width: 4vw;
+    text-align: center;
+    background-color: #FDD874;
+    padding: 10px 0;
+    margin-right: 15px;
+    border-radius: 10px;
+    border-width: 0.2px;
+    border-color: silver; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s;
+}
+
+.calenderBtn {
+    margin-left: 20px;
+    width: 2.5vw;
+    background-color: #FDD874;
+    padding: 6px 0;
+    margin-right: 15px;
+    border-radius: 10px;
+    border-width: 0.2px;
+    border-color: silver; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s;
+}
+
+.editBtn {
+    margin-left: 52vw;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 10vw;
+    background-color: #FDD874;
+    padding: 10px 0;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: silver; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s;
+}
+
+.saveBtn {
+    margin-top: 82px;
+    margin-left: 52vw;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 10vw;
+    background-color: #FDD874;
+    padding: 10px 0;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: silver; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #fff1cf;
+}
+
+#calenderImg {
+    width: 30px;
+    height: 30px;
+}
+
+.customLabel {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 10vw;
+    text-align: center;
+    background-color: #FDD874;
+    border-radius: 10px;
+    border-width: 1.5px;
+    padding: 10px 0;
+    margin-right: 15px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.idInput {
+    text-align: center;
+    font-size: 1.2rem;
+    width: 20vw;
+    padding: 10px 0;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: rgb(243, 241, 241);    
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.datePicker input {
+    font-size: 1.2rem;
+    width: 20vw;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: rgb(243, 241, 241);    
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.customLabel {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.2rem;
+    width: 10vw;
+    text-align: center;
+    background-color: #FDD874;
+    border-radius: 10px;
+    border-width: 1.5px;
+    padding: 10px 0;
+    margin-right: 15px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
