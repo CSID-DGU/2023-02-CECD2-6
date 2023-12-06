@@ -13,5 +13,5 @@ public class SummaryResponseDto {
     private List<String> links;
     private List<String> titles;
     private List<String> contexts;
-    private String summary;
+    private List<String> summary;
 }

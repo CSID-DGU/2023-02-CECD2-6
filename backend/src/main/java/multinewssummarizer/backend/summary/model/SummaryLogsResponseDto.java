@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class SummaryLogsResponseDto {
-    private String summary;
+    private List<String> summary;
     private String keywords;
     private String categories;
     private LocalDateTime createdTime;
