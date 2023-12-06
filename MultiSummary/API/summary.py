@@ -82,7 +82,7 @@ async def createSummary(number_list: NumberList):
             execution_time = end_time - start_time
             print(f"코드 실행 시간: {execution_time} 초")
 
-            return {"summary": f"{summarys}"}
+            return {"summary": f"{'.?.'.join(summarys)}"}
         else:
             return {"summary": f""}
     # 예외가 발생한 경우
