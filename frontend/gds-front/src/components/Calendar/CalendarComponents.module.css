@@ -1,0 +1,9 @@
+.datePicker {
+    font-size: 1.2rem;
+    width: 20vw;
+    padding: 10px 0;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: rgb(243, 241, 241);    
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}

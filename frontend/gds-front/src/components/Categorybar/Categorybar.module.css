@@ -1,0 +1,37 @@
+.categoryBar {
+    display: flex;
+    border-radius: 10px;
+    width: 850px;
+    height: 100px;
+    background-color: white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin-left: 30px;
+}
+
+.titleDiv p {
+    border-right: 1px solid silver;
+    padding: 10px 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.selectDiv {
+    margin: 10px 10px;
+    display: flex;
+    width: 1;
+}
+
+.eachSelect {
+    margin-left: 10px;
+    padding: 0 10px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+span {
+    font-weight: bold;
+}
+
+.eachSelect:hover {
+    background-color: #fff1cf;
+}

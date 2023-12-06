@@ -1,0 +1,93 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    width: 100%;
+}
+
+.topSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 75%;
+}
+
+.logoSection {
+    display: flex;
+    align-items: center;
+    margin-left: 23vw;
+}
+
+#imageLogo {
+    width: 15vh;
+    height: 15vh;
+}
+
+#textLogo {
+    margin-top: 0.5rem;
+    width:21vw;
+    height: 6vh;
+}
+
+#userImg {
+    margin-top: 1rem;
+    margin-left: 1.5rem;
+    width:5vh;
+    height: 5vh;
+}
+
+.btnSection {
+    display: flex;
+    align-items: center;
+}
+
+.headerBtn {
+    margin-top: 1rem;
+    border: none;
+    background: none;
+    padding: 5px 10px;
+    text-decoration: none; /* 텍스트 밑줄 없애기 */
+    transition: text-decoration 0.3s; /* 텍스트 변화 시간 설정 */
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.headerBtn:hover {
+    text-decoration: underline; /* 호버 시에 밑줄 추가 */
+}
+
+.navContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 75%;
+    margin-top: 1.2%;
+    border-bottom: 1px #c0c0c0 solid;
+}
+
+.mainNav {
+    display: flex;
+    margin-top: 20px;
+    background-color: #fff;
+    width: 100%; 
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.7rem;
+}
+
+.mainNav a {
+    padding: 1% 13%;
+    text-decoration: none;
+    color: black;
+    transition: background-color 0.3s;
+}
+
+.mainNav a:hover {
+    background-color: #fff1cf;
+    border-bottom: 3px #ffb300 solid;
+}
+
+.mainNav .active {
+    background-color: #FDD874; 
+}

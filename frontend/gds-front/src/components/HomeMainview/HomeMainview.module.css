@@ -1,0 +1,22 @@
+.homeMainView {
+    width: 75%;
+}
+
+.anotherNewsDiv {
+    display: flex;
+}
+
+.anotherNewsBtn {
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100px;
+    height: 80px;
+    background-color: #FDD874;
+    margin-right: 15px;
+    border-radius: 10px;
+    border-width: 1.5px;
+    border-color: silver; 
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}

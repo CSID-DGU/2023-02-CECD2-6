@@ -1,0 +1,51 @@
+.aboutMainView {
+    width: 75%;
+}
+
+.logoSection {
+    padding-left: 30px;
+    display: flex;
+    text-align: center;
+}
+
+#imageLogo {
+    width: 15vh;
+    height: 15vh;
+}
+
+#textLogo {
+    margin-top: 45px;
+    width:21vw;
+    height: 6vh;
+}
+
+.introSection {
+    margin: 0 30px 0 30px;
+    padding: 10px 0;
+    border-radius: 10px;
+    background-color: #FDD874;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.introSection p {
+    padding: 20px;
+    font-weight: 550;
+    font-size: 1.2rem;
+}
+
+.mainFuncSection {
+    margin: 0 30px 0 30px;
+    padding: 10px 0;
+    border-radius: 10px;
+    background-color: #FDD874;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    padding: 20px;
+}
+
+.mainFuncSection p {
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    
+}
