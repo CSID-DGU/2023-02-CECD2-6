@@ -9,9 +9,6 @@ import java.util.List;
 @Getter
 @Builder
 public class SummaryResponseDto {
-    private List<Long> ids;
-    private List<String> links;
-    private List<String> titles;
-    private List<String> contexts;
     private List<String> summary;
+    private List<SummaryNewsVO> news;
 }

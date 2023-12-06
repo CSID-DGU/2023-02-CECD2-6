@@ -1,5 +1,6 @@
 package multinewssummarizer.backend.news.repository;
 
+import multinewssummarizer.backend.news.domain.News;
 import multinewssummarizer.backend.summary.model.SummaryRepositoryVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ class NewsRepositoryTest {
 
         categories.add("정치");
         keywords.add("밥");
-        List<SummaryRepositoryVO> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDay);
+        List<News> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDay);
         System.out.println("output = " + output);
     }
 }

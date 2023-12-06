@@ -50,20 +50,22 @@ public class SummaryService {
             keywords = null;
         }
 
-        List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
+        List<News> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
         System.out.println("findNews = " + findNews);
         if (findNews.isEmpty()) {
             throw new CustomExceptions.NoNewsDataException("선택한 주제/키워드에 해당하는 뉴스 데이터가 존재하지 않습니다.");
         }
+
         List<Long> findIds = new ArrayList<>();
-        List<String> links = new ArrayList<>();
-        List<String> titles = new ArrayList<>();
-        List<String> contexts = new ArrayList<>();
-        for (SummaryRepositoryVO summaryRepositoryVO : findNews) {
-            findIds.add(summaryRepositoryVO.getId());
-            links.add(summaryRepositoryVO.getLink());
-            titles.add(summaryRepositoryVO.getTitle());
-            contexts.add(summaryRepositoryVO.getContext());
+        List<SummaryNewsVO> news = new ArrayList<>();
+        for (News n : findNews) {
+            findIds.add(n.getId());
+            news.add(SummaryNewsVO.builder()
+                    .title(n.getTitle())
+                    .context(n.getContext())
+                    .companyName(n.getCompanyName())
+                    .link(n.getLink())
+                    .build());
         }
 
         // POST 요청
@@ -102,11 +104,8 @@ public class SummaryService {
         List<String> convertSummary = convertToList(summary);
 
         SummaryResponseDto summaryResponseDto = SummaryResponseDto.builder()
-                .ids(findIds)
-                .links(links)
-                .titles(titles)
-                .contexts(contexts)
                 .summary(convertSummary)
+                .news(news)
                 .build();
 
         return summaryResponseDto;
@@ -142,17 +141,15 @@ public class SummaryService {
             System.out.println("keywords = " + keywords);
 
             LocalDateTime oneDayAgo = LocalDate.now().minusDays(1).atStartOfDay();
-            List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
+            List<News> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
             System.out.println("findNews = " + findNews);
             // 부합하는 뉴스가 없으면 스킵
             if (findNews.isEmpty()) {
                 continue;
             }
             List<Long> findIds = new ArrayList<>();
-            List<String> contexts = new ArrayList<>();
-            for (SummaryRepositoryVO summaryRepositoryVO : findNews) {
-                findIds.add(summaryRepositoryVO.getId());
-                contexts.add(summaryRepositoryVO.getContext());
+            for (News n : findNews) {
+                findIds.add(n.getId());
             }
 
             // 4. 키워드 전체에 대한 요약문을 만들고
