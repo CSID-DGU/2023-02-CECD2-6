@@ -1,6 +1,7 @@
 package multinewssummarizer.backend.news.repository;
 
 import multinewssummarizer.backend.news.domain.News;
+import multinewssummarizer.backend.summary.model.SummaryNewsVO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

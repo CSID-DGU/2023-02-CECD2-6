@@ -9,7 +9,6 @@ import multinewssummarizer.backend.news.domain.News;
 @Entity
 @Table(name = "newskeyword")
 @Getter @Setter
-@ToString
 public class NewsKeyword {
 
     @Id @GeneratedValue
