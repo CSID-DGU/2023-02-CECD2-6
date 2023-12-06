@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,12 @@ class NewsRepositoryTest {
         List<String> keywords = new ArrayList<>();
         LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
+        LocalDateTime oneDay = LocalDate.now().minusDays(1).atStartOfDay();
+        System.out.println("oneDay = " + oneDay);
+
         categories.add("정치");
         keywords.add("밥");
-        List<SummaryRepositoryVO> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
+        List<SummaryRepositoryVO> output = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDay);
         System.out.println("output = " + output);
     }
 }
