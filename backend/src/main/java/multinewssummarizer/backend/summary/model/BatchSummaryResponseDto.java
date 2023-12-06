@@ -9,6 +9,6 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor
 public class BatchSummaryResponseDto {
-    private String summary;
+    private List<String> summary;
     private List<SummaryNewsVO> news;
 }

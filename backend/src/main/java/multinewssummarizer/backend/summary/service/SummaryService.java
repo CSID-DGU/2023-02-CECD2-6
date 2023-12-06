@@ -98,12 +98,14 @@ public class SummaryService {
          * TODO: 만약, 오류가 발생했을 시, postForObject()로 시도한다면 에러세시지가 뜨지 않지만, exchange()로 한다면, <200 OK OK,{summary=}>로 뜬다. exception처리가 필요할수도
          */
 
+        List<String> convertSummary = convertToList(summary);
+
         SummaryResponseDto summaryResponseDto = SummaryResponseDto.builder()
                 .ids(findIds)
                 .links(links)
                 .titles(titles)
                 .contexts(contexts)
-                .summary(summary)
+                .summary(convertSummary)
                 .build();
 
         return summaryResponseDto;
@@ -230,8 +232,10 @@ public class SummaryService {
             summarizeLogRepository.save(summarizelog);
         }
 
+        List<String> convertSummary = convertToList(batchResult.getSummarize());
+
         BatchSummaryResponseDto batchSummaryResponseDto = BatchSummaryResponseDto.builder()
-                .summary(batchResult.getSummarize())
+                .summary(convertSummary)
                 .news(summaryNewsVO)
                 .build();
 
@@ -264,8 +268,10 @@ public class SummaryService {
                         .build());
             }
 
+            List<String> convertSummary = convertToList(findSummarizeLog.getSummarize());
+
             response.add(SummaryLogsResponseDto.builder()
-                    .summary(findSummarizeLog.getSummarize())
+                    .summary(convertSummary)
                     .categories(findSummarizeLog.getCategories())
                     .keywords(findSummarizeLog.getKeywords())
                     .createdTime(findSummarizeLog.getCreatedTime())
@@ -293,4 +299,15 @@ public class SummaryService {
         }
     }
 
+    private List<String> convertToList(String str) {
+        String[] splits = str.split("\\.\\?\\.");
+
+        List<String> result = new ArrayList<>();
+
+        for (String split : splits) {
+            result.add(split);
+        }
+
+        return result;
+    }
 }
