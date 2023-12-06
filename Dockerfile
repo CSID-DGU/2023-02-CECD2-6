@@ -9,4 +9,4 @@ RUN gradle build --no-daemon -x test
 FROM openjdk:17-jdk
 WORKDIR /app
 COPY --from=builder /app/build/libs/backend-0.0.1-SNAPSHOT.jar /app/backend-springboot.jar
-ENTRYPOINT [ "nohup", "java", "-Dspring.profiles.active=production", "-jar", "backend-springboot.jar" ]
+ENTRYPOINT [ "nohup", "java", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=production", "-jar", "backend-springboot.jar" ]
