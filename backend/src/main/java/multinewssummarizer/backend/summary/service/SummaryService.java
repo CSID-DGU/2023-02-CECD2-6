@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class SummaryService {
         System.out.println("summaryRequestDto = " + summaryRequestDto);
         ArrayList<String> categories = summaryRequestDto.getCategories();
         ArrayList<String> keywords = summaryRequestDto.getKeywords();
-        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+        LocalDateTime oneDayAgo = LocalDate.now().minusDays(1).atStartOfDay();
 
         if (categories.isEmpty()) {
             categories = null;
@@ -140,7 +141,7 @@ public class SummaryService {
             System.out.println("categories = " + categories);
             System.out.println("keywords = " + keywords);
 
-            LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
+            LocalDateTime oneDayAgo = LocalDate.now().minusDays(1).atStartOfDay();
             List<SummaryRepositoryVO> findNews = newsRepository.findNewsByCategoriesAndKeywords(categories, keywords, oneDayAgo);
             System.out.println("findNews = " + findNews);
             // 부합하는 뉴스가 없으면 스킵
