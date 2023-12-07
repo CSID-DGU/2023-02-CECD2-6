@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "http://gdsloadbalancer-590554331.ap-northeast-2.elb.amazonaws.com")
+                .allowedOrigins("http://3.36.118.252:3000","http://localhost:3000", "http://gdsloadbalancer-590554331.ap-northeast-2.elb.amazonaws.com")
                 .allowedMethods("GET", "POST")
                 .allowedHeaders("*")
                 .allowCredentials(true)
