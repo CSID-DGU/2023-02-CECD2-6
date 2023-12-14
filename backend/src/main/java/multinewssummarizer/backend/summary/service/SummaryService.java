@@ -34,7 +34,7 @@ public class SummaryService {
     private final NewsRepository newsRepository;
     private final BatchresultRepository batchResultRepository;
 
-    private static String url = "https://dd24-116-255-71-186.ngrok-free.app/summary/";
+    private static String url = "https://1dfe-116-255-71-186.ngrok-free.app/summary/";
 
     @Transactional
     public SummaryResponseDto instantSummary(SummaryRequestDto summaryRequestDto) throws ParseException {
